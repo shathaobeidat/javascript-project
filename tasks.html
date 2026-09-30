@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Portal || Tasks</title>
+    <link rel="stylesheet" href="tasks.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        *{
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+        body{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .grid{
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            grid-template-areas: "header header" "sidebar main";
+            /* gap:10px; */
+        }
+        .tasks-section{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        header{
+            grid-area: header;
+            height: 60px;
+            background: plum;
+        }
+        .sidebar{
+            grid-area: sidebar;
+            background: purple;
+            height: 100vh;
+        }
+        main{
+            grid-area: main;
+            padding: 10px;
+        }
+        .card{
+            padding: 5px;
+            border: 2px solid #c1c1c1;
+            border-radius: 14px;
+        }
+        .form{
+            flex:2;
+            display: flex;
+            flex-direction: column;
+            gap:10px;
+            padding: 10px;
+        }
+        .list{
+            flex:3;
+        }
+        .field{
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .field-flex{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;  
+            justify-content: space-between;
+        }
+        .field-flex .field{
+            flex:1;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="grid">
+        <header></header>
+        <div class="sidebar"></div>
+        <main>
+            <h1>Tasks</h1>
+            <p>Create a task and publish it to one of your courses.</p>
+            <section class="tasks-section">
+                <div class="form card">
+                    <div class="field">
+                        <label for="task">Task name</label>
+                        <input type="text" placeholder="e.g. Binary tree assignment" required>                        
+                    </div>
+                    <div class="field">
+                        <label for="description">Description</label>
+                        <textarea id="text-area" rows="4"  placeholder="What should students do?" required></textarea>                     
+                    </div>
+                    <div class="field-flex">
+                        <div class="field">
+                            <label for="deadline">Deadline</label>
+                            <input type="date">                     
+                        </div> 
+                        <div class="field">
+                            <label for="course">Publish to course</label>
+                            <input type="">                     
+                        </div>                         
+                    </div> 
+                    <button id="submit">Publish task</button>
+
+                </div>
+                <div class="list card"></div>
+            </section>
+        </main>
+    </div>
+    <script src="tasks.js"></script>
+</body>
+</html>
