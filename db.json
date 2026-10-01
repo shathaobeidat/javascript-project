@@ -3,7 +3,7 @@
     {
       "id": "1",
       "name": "Dr. shatha",
-      "email": "rana@university.edu",
+      "email": "shatha@university.edu",
       "password": "password123",
       "role": "instructor"
     },
@@ -20,48 +20,6 @@
       "email": "admin@university.edu",
       "password": "admin123",
       "role": "admin"
-    },
-    {
-      "role": "instructor",
-      "name": "Dr.yousef",
-      "email": "yousef@university.edu",
-      "password": "password123",
-      "id": "W6VrSxWYsuY"
-    },
-    {
-      "role": "instructor",
-      "name": "Dr.omar",
-      "email": "omar@university.edu",
-      "password": "password123456",
-      "id": "eQuvzKR6abo"
-    },
-    {
-      "role": "instructor",
-      "name": "rami",
-      "email": "rami@university.edu",
-      "password": "12345678",
-      "id": "RrY7AixWSko"
-    },
-    {
-      "role": "instructor",
-      "name": "mona",
-      "email": "mona@university.edu",
-      "password": ".1:5500/sginup.html",
-      "id": "4G2W43f5VbU"
-    },
-    {
-      "role": "instructor",
-      "name": "rama",
-      "email": "rama@university.edu",
-      "password": "1331313131313",
-      "id": "8lO5cCQt2gM"
-    },
-    {
-      "role": "instructor",
-      "name": "khalid",
-      "email": "khalid@university.edu",
-      "password": "Khalid12",
-      "id": "FGZJIY5wNNA"
     }
   ],
   "courses": [
@@ -84,18 +42,14 @@
       "id": "4",
       "name": "Discrete mathematics",
       "code": "MATH201"
+    },
+    {
+      "code": "CS167",
+      "name": "Database",
+      "id": "mU0M4DL2Lv4"
     }
   ],
   "students": [
-    {
-      "id": "1",
-      "name": "Lina Haddad",
-      "email": "lina.haddad@student.university.edu",
-      "courseId": 1,
-      "status": "Active",
-      "grade": 92,
-      "attendanceRate": 98
-    },
     {
       "id": "2",
       "name": "Omar Khalil",
@@ -103,7 +57,20 @@
       "courseId": 2,
       "status": "At risk",
       "grade": 64,
-      "attendanceRate": 71
+      "attendanceHistory": [
+        {
+          "date": "2026-10-01",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-28",
+          "status": "Absent"
+        },
+        {
+          "date": "2026-09-25",
+          "status": "Present"
+        }
+      ]
     },
     {
       "id": "3",
@@ -112,7 +79,20 @@
       "courseId": 3,
       "status": "Active",
       "grade": 95,
-      "attendanceRate": 100
+      "attendanceHistory": [
+        {
+          "date": "2026-10-01",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-28",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-25",
+          "status": "Present"
+        }
+      ]
     },
     {
       "id": "4",
@@ -121,7 +101,20 @@
       "courseId": 1,
       "status": "Active",
       "grade": 84,
-      "attendanceRate": 92
+      "attendanceHistory": [
+        {
+          "date": "2026-10-01",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-28",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-25",
+          "status": "Absent"
+        }
+      ]
     },
     {
       "id": "5",
@@ -130,7 +123,20 @@
       "courseId": 1,
       "status": "At risk",
       "grade": 58,
-      "attendanceRate": 65
+      "attendanceHistory": [
+        {
+          "date": "2026-10-01",
+          "status": "Absent"
+        },
+        {
+          "date": "2026-09-28",
+          "status": "Absent"
+        },
+        {
+          "date": "2026-09-25",
+          "status": "Present"
+        }
+      ]
     },
     {
       "id": "6",
@@ -139,7 +145,20 @@
       "courseId": 2,
       "status": "Active",
       "grade": 88,
-      "attendanceRate": 94
+      "attendanceHistory": [
+        {
+          "date": "2026-10-01",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-28",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-25",
+          "status": "Present"
+        }
+      ]
     },
     {
       "id": "7",
@@ -148,7 +167,20 @@
       "courseId": 3,
       "status": "At risk",
       "grade": 52,
-      "attendanceRate": 50
+      "attendanceHistory": [
+        {
+          "date": "2026-10-01",
+          "status": "Absent"
+        },
+        {
+          "date": "2026-09-28",
+          "status": "Absent"
+        },
+        {
+          "date": "2026-09-25",
+          "status": "Absent"
+        }
+      ]
     },
     {
       "id": "8",
@@ -157,7 +189,20 @@
       "courseId": 1,
       "status": "Active",
       "grade": 81,
-      "attendanceRate": 88
+      "attendanceHistory": [
+        {
+          "date": "2026-10-01",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-28",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-25",
+          "status": "Present"
+        }
+      ]
     },
     {
       "id": "9",
@@ -166,16 +211,42 @@
       "courseId": 2,
       "status": "Active",
       "grade": 96,
-      "attendanceRate": 99
+      "attendanceHistory": [
+        {
+          "date": "2026-10-01",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-28",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-25",
+          "status": "Present"
+        }
+      ]
     },
     {
       "id": "10",
       "name": "Fadi Masri",
-      "email": "fadi.masri@student.university.edu",
+      "universityid": "32201003040",
       "courseId": 3,
       "status": "Active",
       "grade": 72,
-      "attendanceRate": 79
+      "attendanceHistory": [
+        {
+          "date": "2026-10-01",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-28",
+          "status": "Absent"
+        },
+        {
+          "date": "2026-09-25",
+          "status": "Present"
+        }
+      ]
     },
     {
       "id": "11",
@@ -184,7 +255,20 @@
       "courseId": 4,
       "status": "Active",
       "grade": 77,
-      "attendanceRate": 90
+      "attendanceHistory": [
+        {
+          "date": "2026-10-01",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-28",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-25",
+          "status": "Present"
+        }
+      ]
     },
     {
       "id": "12",
@@ -193,7 +277,20 @@
       "courseId": 4,
       "status": "Archived",
       "grade": 69,
-      "attendanceRate": 60
+      "attendanceHistory": [
+        {
+          "date": "2026-10-01",
+          "status": "Absent"
+        },
+        {
+          "date": "2026-09-28",
+          "status": "Absent"
+        },
+        {
+          "date": "2026-09-25",
+          "status": "Present"
+        }
+      ]
     },
     {
       "id": "13",
@@ -202,7 +299,20 @@
       "courseId": 2,
       "status": "Archived",
       "grade": 74,
-      "attendanceRate": 82
+      "attendanceHistory": [
+        {
+          "date": "2026-10-01",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-28",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-25",
+          "status": "Present"
+        }
+      ]
     },
     {
       "id": "14",
@@ -211,7 +321,20 @@
       "courseId": 4,
       "status": "At risk",
       "grade": 61,
-      "attendanceRate": 68
+      "attendanceHistory": [
+        {
+          "date": "2026-10-01",
+          "status": "Absent"
+        },
+        {
+          "date": "2026-09-28",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-25",
+          "status": "Absent"
+        }
+      ]
     },
     {
       "id": "15",
@@ -220,7 +343,20 @@
       "courseId": 1,
       "status": "Active",
       "grade": 90,
-      "attendanceRate": 96
+      "attendanceHistory": [
+        {
+          "date": "2026-10-01",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-28",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-25",
+          "status": "Present"
+        }
+      ]
     },
     {
       "id": "16",
@@ -229,7 +365,20 @@
       "courseId": 3,
       "status": "Active",
       "grade": 86,
-      "attendanceRate": 91
+      "attendanceHistory": [
+        {
+          "date": "2026-10-01",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-28",
+          "status": "Present"
+        },
+        {
+          "date": "2026-09-25",
+          "status": "Present"
+        }
+      ]
     }
   ],
   "tasks": [

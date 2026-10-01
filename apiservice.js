@@ -106,9 +106,9 @@ export const getTasksByCourse = (courseId) => request(`/tasks${toQuery({ courseI
 
 /** New tasks start with 0 progress and nothing waiting for grading. */
 export const addTask = (taskData) =>
-  send('POST', '/tasks', { progress: 0, pendingGrading: 0, ...normalize(taskData) });
+  send('POST', '/tasks', { progress: 0, pendingGrading: 0, ...normalize(taskData) });    //OMAR
 
-export const deleteTask = (id) => send('DELETE', `/tasks/${id}`);
+export const deleteTask = (id) => send('DELETE', `/tasks/${id}`);      //OMAR
 
 
 const GRADE_LABELS = ['A', 'B', 'C', 'D', 'F'];
