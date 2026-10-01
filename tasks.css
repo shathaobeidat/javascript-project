@@ -1,69 +1,191 @@
-        *{
-            box-sizing: border-box;
-            padding: 0;
-            margin: 0;
-        }
-        body{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .grid{
-            display: grid;
-            grid-template-columns: 100px 1fr;
-            grid-template-areas: "header header" "sidebar main";
-        }
-        .tasks-section{
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        header{
-            grid-area: header;
-            height: 60px;
-            background: plum;
-        }
-        .sidebar{
-            grid-area: sidebar;
-            background: purple;
-            height: 100vh;
-        }
-        main{
-            grid-area: main;
-            padding: 10px;
-        }
-        .card{
-            padding: 5px;
-            border: 2px solid #c1c1c1;
-            border-radius: 14px;
-        }
-        .form{
-            flex:2;
-            display: flex;
-            flex-direction: column;
-            gap:10px;
-            padding: 10px;
-        }
-        .list{
-            flex:3;
-        }
-        .field{
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        .field-flex{
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;  
-            justify-content: space-between;
-        }
-        .field-flex .field{
-            flex:1;
-        }
-        textarea{
-            resize:vertical;
-            padding: 5px;
-        }
-        input{
-            padding: 5px;
-        }
+
+/* ===== Universal theme (colors taken from the club logo: navy + gold) ===== */
+:root {
+  --navy: #0b1f4b;
+  --gold: #c9a227;
+
+  --bg: #f3f5fa;
+  --surface: #ffffff;
+  --surface-hover: #eef1f8;
+  --text: #1c2333;
+  --muted: #6b7488;
+  --border: #dfe3ec;
+  --focus: #2f6fe0;
+  --danger: #d93f45;
+  --shadow: 0 10px 30px rgba(11, 31, 75, .15);
+
+  --sidebar-bg: #0b1f4b;
+  --sidebar-text: #c3cce4;
+  --sidebar-hover: rgba(255, 255, 255, .08);
+  --active-bg: rgba(201, 162, 39, .18);
+  --active-text: #f0cb55;
+  --radius: 28px;
+}
+[data-theme="dark"] {
+  --bg: #0d1220;
+  --surface: #161d2f;
+  --surface-hover: #1f2842;
+  --text: #e8ecf5;
+  --muted: #8e99b3;
+  --border: #26304a;
+  --focus: #6c9bff;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .5);
+  --sidebar-bg: #081330;
+}
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.grid{
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    grid-template-areas: "header header" "sidebar main";
+}
+.tasks-section{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+/* header{
+    grid-area: header;
+    height: 60px;
+    
+}
+.sidebar{
+    grid-area: sidebar;
+    
+    height: 100vh;
+} */
+main{
+    grid-area: main;
+    padding: 10px;
+}
+.card{
+    padding: 5px;
+    border: 2px solid #c1c1c1;
+    border-radius: 14px;
+}
+.form{
+    flex:2;
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+    padding: 10px;
+}
+.list{
+    flex:3;
+}
+.field{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.field-flex{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;  
+    justify-content: space-between;
+}
+.field-flex .field{
+    flex:1;
+}
+textarea{
+    resize:vertical;
+    padding: 5px;
+}
+input{
+    padding: 5px;
+}
+#courseId{
+    align-self: stretch;
+}
+select{
+    padding: 5px;
+}
+/* ---------- the two cards (form + list) ---------- */
+
+.card {
+    background: var(--surface, #ffffff);
+    color: var(--text, #1c2333);
+    border: 1px solid var(--border, #dfe3ec);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+/* ---------- form ---------- */
+label {
+    font-weight: 600;
+    font-size: 14px;
+}
+input, textarea, select {
+    background: var(--bg, #f3f5fa);
+    color: var(--text, #1c2333);
+    border: 1px solid var(--border, #dfe3ec);
+    border-radius: 10px;
+    font: inherit;
+}
+input:focus, textarea:focus, select:focus {
+    outline: 2px solid var(--focus, #2f6fe0);
+}
+#publish-btn {
+    padding: 12px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--focus, #2f6fe0);
+    color: #ffffff;
+    font-weight: 700;
+    cursor: pointer;
+}
+#publish-btn:hover {
+    opacity: 0.9;
+}
+
+/* ---------- task list ---------- */
+#task-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* each task card (it also has the class "card", so we override it here) */
+#task-cards .card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--bg, #f3f5fa);
+    border-radius: 12px;
+}
+
+.task-card-container p:first-child {
+    font-weight: 700;
+}
+.task-card-container p:last-child {
+    margin-top: 6px;
+    font-size: 14px;
+    color: var(--muted, #6b7488);
+}
+
+.delete {
+    background: none;
+    border: 0;
+    color: var(--danger, #d93f45);
+    font-weight: 700;
+    cursor: pointer;
+}
+.delete:hover {
+    text-decoration: underline;
+}
+
+/* ---------- mobile ---------- */
+@media (max-width: 800px) {
+    .form, .list {
+        flex: 1 1 100%;   /* form on top, list below */
+    }
+}
