@@ -1,4 +1,4 @@
-/* ===== Universal theme (colors taken from the club logo: navy + gold) ===== */
+/* ===== Universal theme  ===== */
 :root {
   --navy: #0b1f4b;
   --gold: #c9a227;
@@ -87,7 +87,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .nav-item:focus-visible { outline-offset: -2px; outline-color: var(--gold); }
 .nav-item.active { background: var(--active-bg); color: var(--active-text); font-weight: 600; }
 
-/* ===== Content / topbar ===== */
+/* ===== Content  ===== */
 .content {
   flex: 1;
   min-width: 0;
@@ -130,7 +130,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .icon-btn:hover, .profile:hover { background: var(--surface-hover); }
 
-/* theme toggle: show moon in light mode, sun in dark mode */
+/* theme toggle:  dark mode */
 .icon-sun { display: none; }
 [data-theme="dark"] .icon-sun { display: block; }
 [data-theme="dark"] .icon-moon { display: none; }
@@ -144,7 +144,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .badge[hidden] { display: none; }
 
-/* ===== Avatar + dropdown ===== */
+/* =====  dropdown ===== */
 .profile-wrap { position: relative; flex: none; }
 .profile {
   display: flex; align-items: center; gap: 12px;
@@ -186,7 +186,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .toast[hidden] { display: none; }
 
-/* ===== Mobile ===== */
+/* ===== Response ===== */
 @media (max-width: 720px) {
   .sidebar { width: 200px; }
   .brand-name { font-size: 18px; }
