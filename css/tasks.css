@@ -32,13 +32,20 @@
   --shadow: 0 10px 30px rgba(0, 0, 0, .5);
   --sidebar-bg: #081330;
 }
+
+
+
 *{
     box-sizing: border-box;
     padding: 0;
     margin: 0;
 }
-body{
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  transition: background var(--transition), color var(--transition);
 }
 .grid{
     display: grid;

@@ -4,86 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teacher Portal || Tasks</title>
-    <link rel="stylesheet" href="tasks.css">
+    <link rel="stylesheet" href="../css/tasks.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <style>
-        *{
-            box-sizing: border-box;
-            padding: 0;
-            margin: 0;
-        }
-        body{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .grid{
-            display: grid;
-            grid-template-columns: 100px 1fr;
-            grid-template-areas: "header header" "sidebar main";
-        }
-        .tasks-section{
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        header{
-            grid-area: header;
-            height: 60px;
-            background: plum;
-        }
-        .sidebar{
-            grid-area: sidebar;
-            background: purple;
-            height: 100vh;
-        }
-        main{
-            grid-area: main;
-            padding: 10px;
-        }
-        .card{
-            padding: 5px;
-            border: 2px solid #c1c1c1;
-            border-radius: 14px;
-        }
-        .form{
-            flex:2;
-            display: flex;
-            flex-direction: column;
-            gap:10px;
-            padding: 10px;
-        }
-        .list{
-            flex:3;
-        }
-        .field{
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        .field-flex{
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;  
-            justify-content: space-between;
-        }
-        .field-flex .field{
-            flex:1;
-        }
-        textarea{
-            resize:vertical;
-            padding: 5px;
-        }
-        input{
-            padding: 5px;
-        }
-        #courseId{
-            align-self: stretch;
-        }
-        select{
-            padding: 5px;
-        }
-
-    </style>
+    
 </head>
 <body>
     <div class="grid">
@@ -110,7 +33,7 @@
                         <div class="field">
                             <label for="courseId">Publish to course <span>*</span></label>
                             <select name="courseId" id="courseId" required>
-                                <option value="cs99">cs99</option>
+                                <!-- <option value="cs99">cs99</option> -->
                                 <!-- <option value="dynamics">dynamics</option> -->
                                 <!-- <option value="machineLearning">machineLearning</option> -->
                             </select>                     
@@ -125,6 +48,6 @@
             </section>
         </main>
     </div>
-    <script src="tasks.js" type="module"></script>
+    <script src="../js/tasks.js" type="module"></script>
 </body>
 </html>
