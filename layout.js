@@ -1,8 +1,7 @@
 /* ---------- Sidebar navigation ---------- */
 const items = document.querySelectorAll('.nav-item');
 const title = document.getElementById('page-title');
-import { getStudents, getCourses, STATUS } from './api.js';
-import { getSession, clearSession } from './session.js';
+
 items.forEach(item => {
   item.addEventListener('click', e => {
     e.preventDefault();
@@ -15,9 +14,6 @@ items.forEach(item => {
     title.textContent = item.querySelector('span').textContent;
   });
 });
-import { initLayout } from './layout.js';
-const page = initLayout({ active: 'students' });
-page.innerHTML = '<h1>Students</h1>';
 
 /* ---------- Toast helper ---------- */
 const toast = document.getElementById('toast');
