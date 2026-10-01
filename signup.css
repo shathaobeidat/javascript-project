@@ -1,0 +1,209 @@
+:root {
+  --navy: #0b1f4b;
+  --gold: #c9a227;
+
+  --bg: #f3f5fa;
+  --surface: #ffffff;
+  --surface-hover: #eef1f8;
+  --text: #1c2333;
+  --muted: #6b7488;
+  --border: #dfe3ec;
+  --focus: #2f6fe0;
+  --danger: #d93f45;
+  --shadow: 0 10px 30px rgba(11, 31, 75, .15);
+
+  --sidebar-bg: #0b1f4b;
+  --sidebar-text: #c3cce4;
+  --sidebar-hover: rgba(255, 255, 255, .08);
+  --active-bg: rgba(201, 162, 39, .18);
+  --active-text: #f0cb55;
+  --radius: 28px;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.contaner{
+    width:350px;
+    margin: 80px auto;
+    border: 1px solid black;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+     padding: 30px;
+     gap: 5px;
+     box-shadow:  var(--shadow);
+}
+.logo{
+    display: flex;
+     gap: 10px;
+}
+.logo img{
+    width: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.logo h3{
+    margin-top: 15px;
+   
+}
+.form-sginup label{
+    font-size: 20px;
+    display: block;
+    color: #555;
+    margin-bottom: 10px;
+}
+.form-sginup input{
+    width: 100%;
+    height: 40px;
+    box-sizing: border-box;
+    padding: 0 20px;
+    margin-top: 5px;
+    font-size: 15px;
+    border: 2px solid #e2e2e2;
+    border-radius: 10px;
+}
+.form-sginup button{
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+    background-color: white;
+    margin-bottom: 10px;
+}
+.form-sginup a {
+    color: #1555a0;
+    text-decoration: none;
+    font-size: 15px;
+    text-decoration: none;
+    
+}
+#password-message{
+    font-size: 15px;
+}
+
+
+
+
+
+/* =========================
+   Small Phone
+   320px - 374px
+========================= */
+@media (max-width: 374px) {
+
+    .contaner {
+        width: 92%;
+        margin: 20px auto;
+        padding: 15px;
+    }
+
+    .logo img {
+        width: 45px;
+    }
+
+    .logo h3 {
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    .form-sginup label {
+        font-size: 16px;
+    }
+
+    .form-sginup input {
+        height: 38px;
+        font-size: 13px;
+        padding: 0 12px;
+    }
+
+    .form-sginup button {
+        height: 38px;
+        font-size: 14px;
+    }
+
+    #password-message {
+        font-size: 12px;
+    }
+}
+
+
+/* =========================
+   Mobile
+   375px - 767px
+========================= */
+@media (min-width: 375px) and (max-width: 767px) {
+
+    .contaner {
+        width: 90%;
+        margin: 30px auto;
+        padding: 20px;
+    }
+
+    .logo img {
+        width: 50px;
+    }
+
+    .logo h3 {
+        font-size: 18px;
+        margin-top: 12px;
+    }
+
+    .form-sginup label {
+        font-size: 18px;
+    }
+
+    .form-sginup input {
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .form-sginup button {
+        height: 40px;
+    }
+
+    #password-message {
+        font-size: 13px;
+    }
+}
+
+
+/* =========================
+   Tablet
+   768px - 1023px
+========================= */
+@media (min-width: 768px) and (max-width: 1023px) {
+
+    .contaner {
+        width: 500px;
+        margin: 60px auto;
+        padding: 30px;
+    }
+
+    .logo img {
+        width: 60px;
+    }
+
+    .logo h3 {
+        font-size: 20px;
+    }
+
+    .form-sginup label {
+        font-size: 19px;
+    }
+
+    .form-sginup input {
+        height: 42px;
+        font-size: 15px;
+    }
+
+    .form-sginup button {
+        height: 42px;
+    }
+
+    #password-message {
+        font-size: 14px;
+    }
+}

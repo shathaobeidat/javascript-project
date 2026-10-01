@@ -1,0 +1,180 @@
+:root {
+  --navy: #0b1f4b;
+  --gold: #c9a227;
+
+  --bg: #f3f5fa;
+  --surface: #ffffff;
+  --surface-hover: #eef1f8;
+  --text: #1c2333;
+  --muted: #6b7488;
+  --border: #dfe3ec;
+  --focus: #2f6fe0;
+  --danger: #d93f45;
+  --shadow: 0 10px 30px rgba(11, 31, 75, .15);
+
+  --sidebar-bg: #0b1f4b;
+  --sidebar-text: #c3cce4;
+  --sidebar-hover: rgba(255, 255, 255, .08);
+  --active-bg: rgba(201, 162, 39, .18);
+  --active-text: #f0cb55;
+  --radius: 28px;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+ 
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.contaner{
+    width:350px;
+    margin: 90px auto;
+    border: 1px solid black;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    gap: 5px;
+    box-shadow:  var(--shadow);
+}
+.logo{
+    display: flex;
+    
+     gap: 10px;
+}
+.logo img{
+    width: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.logo h3{
+    margin-top: 15px;
+    color: var(--text);
+}
+.form-login label{
+    font-size: 20px;
+    display: block;
+    color: var(--text);
+    margin-bottom: 10px;
+}
+.form-login input{
+    width: 100%;
+    height: 40px;
+    box-sizing: border-box;
+    padding: 0 20px;
+    margin-top: 5px;
+    font-size: 15px;
+    border: 2px solid #e2e2e2;
+    border-radius: 10px;
+     color: var(--text);
+}
+.form-login button{
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+    background-color: white;
+}
+.form-login a {
+    color: var(--focus) ;
+    text-decoration: none;
+    font-size: 15px;
+    text-decoration: none;
+}
+
+
+/* Small Phone */
+@media (max-width: 374px) {
+    .contaner {
+        width: 92%;
+        margin: 30px auto;
+        padding: 18px;
+    }
+
+    .logo img {
+        width: 45px;
+        height: 45px;
+    }
+
+    .logo h3 {
+        font-size: 17px;
+    }
+
+    .form-login label {
+        font-size: 16px;
+    }
+
+    .form-login input {
+        height: 38px;
+        padding: 0 12px;
+        font-size: 13px;
+    }
+
+    .form-login button {
+        height: 38px;
+    }
+}
+
+
+/* Mobile */
+@media (min-width: 375px) and (max-width: 767px) {
+    .contaner {
+        width: 90%;
+        margin: 40px auto;
+        padding: 22px;
+    }
+
+    .logo img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .logo h3 {
+        font-size: 18px;
+    }
+
+    .form-login label {
+        font-size: 18px;
+    }
+
+    .form-login input {
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .form-login button {
+        height: 40px;
+    }
+}
+
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .contaner {
+        width: 450px;
+        margin: 70px auto;
+        padding: 30px;
+    }
+
+    .logo img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .form-login label {
+        font-size: 19px;
+    }
+
+    .form-login input {
+        height: 42px;
+    }
+
+    .form-login button {
+        height: 42px;
+    }
+}

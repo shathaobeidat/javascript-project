@@ -1,6 +1,7 @@
 
 
 export const BASE_URL = 'http://localhost:3000';
+// console.log("test");
 
 /** Shared constants — use these instead of typing the strings by hand. */
 export const STATUS = Object.freeze({

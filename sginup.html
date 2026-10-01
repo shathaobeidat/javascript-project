@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="signup.css">
+    <title>Sign-up</title>
+</head>
+<body>
+    
+<header>
+
+</header>
+
+<main>
+    <div class="contaner" id="continer">
+
+        <div class="logo">
+
+        <img src="logo.jpg" alt="sorry error" >
+<h3>Solvably</h3>
+       </div>
+
+        <h2>creat your account</h2>
+
+     <form class="form-sginup" id="signup-form">
+
+            <label for ="fullname" id="Email-input">Full Name <br>
+                <input type="text" name="fullname" placeholder="Dr.Rana Haddad" required id="name">
+            </label>
+            
+             <label for ="Email" id="Email-input">Email <br>
+                <input type="email" name="Email" placeholder="name@university.edu" required id="email">
+            </label>
+
+            <label for ="password" id="password-input">password <br>
+                <input type="password" name="password" placeholder="At lest 8 characters" required id="password"
+                 minlength="8" maxlength="30" pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}">
+            </label>
+
+            <div id="password-message">
+               <p id="leangh-number"></p>
+               <p id="uppercas"></p>
+               <p id="lawercase"></p>
+               <p id="one-number"></p>
+            </div>
+            <br>
+            
+            <label for ="confarm" id="password-input"> confarme password <br>
+                <input type="password" name="confarm" placeholder="At lest 8 characters" 
+                required id="confarm" >
+            </label>
+
+
+            <button id="Sign-up"> create account</button>
+            
+               <p id="signup-message"></p>
+            <br>
+             Have an account?<a href="login.html">sgin in</a>
+
+        </div>
+    </form>
+</main>
+<script type="module"  src="./signup.js" ></script>
+</body>
+</html>
