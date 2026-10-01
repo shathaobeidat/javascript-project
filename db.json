@@ -191,6 +191,29 @@
     }
   ],
   "tasks": [
+<<<<<<< HEAD
+    {
+      "progress": 0,
+      "pendingGrading": 0,
+      "title": "ac",
+      "description": "csa",
+      "dueDate": "2026-10-14",
+      "courseId": 3,
+      "id": "X-U44VS-_Ik"
+    },
+    {
+      "progress": 0,
+      "pendingGrading": 0,
+      "title": "caca",
+      "description": "da",
+      "dueDate": "2026-10-21",
+      "courseId": 1,
+      "id": "BJrJ658Gckg"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
+=======
     { "id": 1, "title": "Linked list implementation", "description": "Implement a singly and doubly linked list with insert, delete and search.", "dueDate": "2026-10-08", "courseId": 1, "progress": 80, "pendingGrading": 36 },
     { "id": 2, "title": "Midterm problem set",        "description": "Solve the 10 practice problems covering stacks, queues and trees.",         "dueDate": "2026-10-15", "courseId": 1, "progress": 38, "pendingGrading": 45 },
     { "id": 3, "title": "UML design document",        "description": "Produce class and sequence diagrams for the course project.",               "dueDate": "2026-10-05", "courseId": 2, "progress": 94, "pendingGrading": 28 },
@@ -201,3 +224,4 @@
     { "id": 8, "title": "Probability worksheet",      "description": "Worksheet on counting principles and basic probability.",                   "dueDate": "2026-11-01", "courseId": 4, "progress": 10, "pendingGrading": 0 }
   ]
 }
+>>>>>>> cc3ef31c63355154bb109b125c5da0f95f421fb6

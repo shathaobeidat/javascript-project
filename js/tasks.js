@@ -1,4 +1,4 @@
-import{getCourses, addTask, deleteTask, getTasks} from './apiservice.js';
+import{getCourses, addTask, deleteTask, getTasks} from '../apiservice.js';
 const title = document.getElementById("title");
 const description = document.getElementById("description");
 const dueDate = document.getElementById("dueDate");
