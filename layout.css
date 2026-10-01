@@ -32,7 +32,10 @@
   --sidebar-bg: #081330;
 }
 
-* { box-sizing: border-box; margin: 0; }
+* { 
+  box-sizing: border-box;
+   margin: 0;
+   }
 body {
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
   background: var(--bg);
