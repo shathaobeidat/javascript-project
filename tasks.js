@@ -1,10 +1,10 @@
-import{getCourses, addTask} from './apiservice.js';
+import{getCourses, addTask, deleteTask, getTasks} from './apiservice.js';
 const title = document.getElementById("title");
 const description = document.getElementById("description");
 const dueDate = document.getElementById("dueDate");
 const courseId = document.getElementById("courseId");
 const pubBtn = document.getElementById("publish-btn");
-const tasksList = document.getElementById("task-list");
+const tasksCards = document.getElementById("task-cards");
 
 async function loadCourses() {
     const course= await getCourses();    
@@ -12,8 +12,8 @@ async function loadCourses() {
 }
 async function courseList() {
     courseId.innerHTML="";
-    const cources= await loadCourses();
-    for(const course of cources){
+    const courses= await loadCourses();
+    for(const course of courses){
         const option=document.createElement("option");
         option.value=course.id;
         option.textContent=`${course.code} - ${course.name}`;
@@ -24,30 +24,6 @@ courseList();
 
 pubBtn.addEventListener("click", async function(event){
     event.preventDefault();
-    // if (title.value.trim() ===""){return;}
-    // const tasks = await addTask(title, description, dueDate, courseId);
-    // for(const task of tasks){
-    //     const div= document.createElement("div");
-    //     const h2= document.createElement("h2");
-    //     const p= document.createElement("p");
-    //     const button= document.createElement("button");
-    //     const container = document.createElement("div");
-    //     task.title=title.value.trim();
-    //     task.description=description.value.trim();
-    //     task.dueDate=dueDate.value;
-    //     task.courseId=courseId.value;
-    //     h2.textContent = task.title +" "+ task.dueDate;
-    //     p.textContent = task.description;
-    //     button.textContent = "delete";
-    //     h2.classList.add(".taskV");
-    //     div.classList.add(".taskC");
-    //     p.classList.add(".taskP");
-    //     button.classList.add(".delete")
-    //     container.appendChild(h2);
-    //     container.appendChild(p);
-    //     div.appendChild(container);
-    //     div.appendChild(button);
-    // }
     const titleV= title.value.trim();
     const descriptionV= description.value.trim();
     const dueDateV =dueDate.value;
@@ -56,10 +32,43 @@ pubBtn.addEventListener("click", async function(event){
         alert("Fill all fields");
         return;
     }
-    await addTask(titleV, descriptionV, dueDateV, courseIdV);
-    courseId.value="";
+    await addTask({ title: titleV, description: descriptionV, dueDate: dueDateV, courseId: courseIdV });
+
+    title.value="";
+    description.value="";
     dueDate.value="";
-    titleV.value="";
-    descriptionV.value="";
+    renderTasks();
 })
+
+async function renderTasks() {
+
+    const allTasks= await getTasks();
+    const courses= await getCourses();
+    tasksCards.innerHTML="";
+    for(const task of allTasks){
+        const card= document.createElement("div");
+        const container = document.createElement("div");
+        const title = document.createElement("p");
+        const btn= document.createElement("button");
+        const p = document.createElement("p");
+        const span =document.createElement("span");
+        title.appendChild(span);
+        title.textContent = `${task.title} - ${task.dueDate}`;
+        p.textContent = task.description;
+        btn.textContent = "delete";
+        card.classList.add("card");
+        container.classList.add("task-card-container");
+        btn.classList.add("delete");
+        btn.addEventListener("click", async function () {
+            await deleteTask(task.id);
+            renderTasks();
+        })
+        card.appendChild(container);
+        card.appendChild(btn);
+        container.appendChild(title);
+        container.appendChild(p);
+        tasksCards.appendChild(card);
+    }
+}
+renderTasks();
 
