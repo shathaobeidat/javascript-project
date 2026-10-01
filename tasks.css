@@ -15,6 +15,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
+            margin-top: 10px;
         }
         header{
             grid-area: header;
@@ -58,4 +59,11 @@
         }
         .field-flex .field{
             flex:1;
+        }
+        textarea{
+            resize:vertical;
+            padding: 5px;
+        }
+        input{
+            padding: 5px;
         }

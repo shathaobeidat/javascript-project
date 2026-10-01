@@ -19,12 +19,12 @@
             display: grid;
             grid-template-columns: 100px 1fr;
             grid-template-areas: "header header" "sidebar main";
-            /* gap:10px; */
         }
         .tasks-section{
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
+            margin-top: 10px;
         }
         header{
             grid-area: header;
@@ -69,6 +69,19 @@
         .field-flex .field{
             flex:1;
         }
+        textarea{
+            resize:vertical;
+            padding: 5px;
+        }
+        input{
+            padding: 5px;
+        }
+        #courseId{
+            align-self: stretch;
+        }
+        select{
+            padding: 5px;
+        }
 
     </style>
 </head>
@@ -82,30 +95,34 @@
             <section class="tasks-section">
                 <div class="form card">
                     <div class="field">
-                        <label for="task">Task name</label>
-                        <input type="text" placeholder="e.g. Binary tree assignment" required>                        
+                        <label for="title">Task name <span>*</span></label>
+                        <input type="text" id="title" placeholder="e.g. Binary tree assignment" required>                        
                     </div>
                     <div class="field">
-                        <label for="description">Description</label>
-                        <textarea id="text-area" rows="4"  placeholder="What should students do?" required></textarea>                     
+                        <label for="description">Description <span>*</span></label>
+                        <textarea id="description" rows="4"  placeholder="What should students do?" required></textarea>                     
                     </div>
                     <div class="field-flex">
                         <div class="field">
-                            <label for="deadline">Deadline</label>
-                            <input type="date">                     
+                            <label for="dueDate">Deadline <span>*</span></label>
+                            <input type="date" id="dueDate" required>                     
                         </div> 
                         <div class="field">
-                            <label for="course">Publish to course</label>
-                            <input type="">                     
+                            <label for="courseId">Publish to course <span>*</span></label>
+                            <select name="courseId" id="courseId" required>
+                                <!-- <option value="cs99">cs99</option> -->
+                                <!-- <option value="dynamics">dynamics</option> -->
+                                <!-- <option value="machineLearning">machineLearning</option> -->
+                            </select>                     
                         </div>                         
                     </div> 
-                    <button id="submit">Publish task</button>
+                    <button id="publish-btn">Publish task</button>
 
                 </div>
-                <div class="list card"></div>
+                <div class="list card" id="task-card"></div>
             </section>
         </main>
     </div>
-    <script src="tasks.js"></script>
+    <script src="tasks.js" type="module"></script>
 </body>
 </html>
