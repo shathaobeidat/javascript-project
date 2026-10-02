@@ -1,4 +1,4 @@
-import { getDashboardData, STATUS } from 'apiservice.js'
+import { getDashboardData, STATUS } from './apiservice.js'
 
 const pageWelcome = document.getElementById("page-welcome");
 

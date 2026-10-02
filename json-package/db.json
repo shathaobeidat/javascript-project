@@ -20,6 +20,13 @@
       "email": "admin@university.edu",
       "password": "admin123",
       "role": "admin"
+    },
+    {
+      "role": "instructor",
+      "name": "omar",
+      "email": "omar@omar.com",
+      "password": "Omar9876",
+      "id": "HJ4LaPLWjzM"
     }
   ],
   "courses": [
@@ -271,6 +278,13 @@
       "courseId": 4,
       "progress": 10,
       "pendingGrading": 0
+      "progress": 0,
+      "pendingGrading": 0,
+      "title": "ds",
+      "description": "ACCSC",
+      "dueDate": "2026-11-03",
+      "courseId": 3,
+      "id": "YoaTPdFeqA0"
     }
   ],
   "attendance": [
@@ -291,6 +305,15 @@
       "studentId": "1",
       "date": "2026-09-30",
       "status": "Absent"
+      "studentId": 1,
+      "date": "2026-09-30",
+      "status": "Present"
+    },
+    {
+      "id": "4",
+      "studentId": 1,
+      "date": "2026-10-01",
+      "status": "Present"
     },
     {
       "id": "5",
@@ -313,6 +336,7 @@
     {
       "id": "8",
       "studentId": "2",
+      "studentId": 2,
       "date": "2026-10-01",
       "status": "Absent"
     },
