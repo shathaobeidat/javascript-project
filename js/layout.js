@@ -2,10 +2,7 @@
    Injects the shared Sidebar + Header into every inner page.
    Pages only need:  <aside id="app-sidebar"></aside>  and  <div id="app-header"></div>
    and  <script type="module" src="../js/layout.js"></script>                          */
-fetch('http://localhost:3000/students')
-  .then(res => res.json())
-  .then(data => console.log('JSON Succissful this data come from server:', data))
-  .catch(err => console.error('  Error in server:', err));
+
 const LOGO = new URL('../assets/logo.jpeg', import.meta.url).href;
 const SESSION_KEY = 'gradify:user';
 const THEME_KEY = 'gradify:theme';
@@ -28,7 +25,7 @@ const icon = (name, cls = '') => `<svg class="icon ${cls}" viewBox="0 0 24 24" a
 const NAV = [
   { href: 'dashboard.html', label: 'Dashboard', icon: 'dashboard' },
   { href: 'students.html', label: 'Students', icon: 'students' },
-  { href: 'tasks.html', label: 'Tasks', icon: 'tasks' },
+  { href: 'tasks.html', label: 'Assignments', icon: 'tasks' },
   { href: 'addcourse.html', label: 'Add course', icon: 'course' },
 ];
 
@@ -44,13 +41,7 @@ export function setSessionUser(user) {
 export function clearSession() {
   try { localStorage.removeItem(SESSION_KEY); } catch { /* storage unavailable */ }
 }
-fetch('db.json') 
-  .then(response => {
-    if (!response.ok) {
-      throw new Error("HTTP error! Status: " + response.status);
-    }
-    return response.json();
-  })
+
 /* ---------- theme ---------- */
 const root = document.documentElement;
 export function applyTheme(theme) {
@@ -98,14 +89,16 @@ function renderHeader(host) {
   const user = getSessionUser();
   const name = user?.name || 'Instructor';
   const initials = name.replace(/^(dr\.?|prof\.?)\s*/i, '').split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase() || 'G';
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
   host.innerHTML = `
     <header class="topbar">
       <button class="icon-btn menu-toggle" id="menu-toggle" aria-label="Open menu">${icon('menu')}</button>
-      <label class="search">
-        ${icon('search')}
-        <input type="search" id="search" placeholder="Search students…" aria-label="Search students">
-        <kbd>/</kbd>
-      </label>
+      <div class="greeting">
+        <span class="greeting-title">${esc(greeting)}, ${esc(name)}</span>
+        <span class="greeting-date">${esc(today)}</span>
+      </div>
       <button class="icon-btn" id="theme-btn" title="Toggle theme" aria-label="Switch theme">${icon('moon', 'icon-moon')}${icon('sun', 'icon-sun')}</button>
       <div class="profile-wrap">
         <button class="profile" id="profile-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="profile-menu">
@@ -137,18 +130,8 @@ function wire() {
   document.getElementById('menu-toggle').addEventListener('click', () => setDrawer(!body.classList.contains('sidebar-open')));
   backdrop.addEventListener('click', () => setDrawer(false));
 
-  /* search: live on the students page, otherwise jump there on Enter */
-  const search = document.getElementById('search');
-  const onStudents = location.pathname.endsWith('students.html');
-  search.addEventListener('input', (e) => {
-    if (onStudents) window.dispatchEvent(new CustomEvent('gradify:search', { detail: { query: e.target.value } }));
-  });
-  search.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !onStudents) location.href = `students.html?q=${encodeURIComponent(search.value.trim())}`;
-  });
+  /* Escape closes the profile menu and the mobile drawer */
   document.addEventListener('keydown', (e) => {
-    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
-    if (e.key === '/' && !typing) { e.preventDefault(); search.focus(); }
     if (e.key === 'Escape') { setMenu(false); setDrawer(false); }
   });
 
