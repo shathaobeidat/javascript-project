@@ -2,7 +2,10 @@
    Injects the shared Sidebar + Header into every inner page.
    Pages only need:  <aside id="app-sidebar"></aside>  and  <div id="app-header"></div>
    and  <script type="module" src="../js/layout.js"></script>                          */
-
+fetch('http://localhost:3000/students')
+  .then(res => res.json())
+  .then(data => console.log('JSON Succissful this data come from server:', data))
+  .catch(err => console.error('  Error in server:', err));
 const LOGO = new URL('../assets/logo.jpeg', import.meta.url).href;
 const SESSION_KEY = 'gradify:user';
 const THEME_KEY = 'gradify:theme';
@@ -41,7 +44,13 @@ export function setSessionUser(user) {
 export function clearSession() {
   try { localStorage.removeItem(SESSION_KEY); } catch { /* storage unavailable */ }
 }
-
+fetch('db.json') 
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("HTTP error! Status: " + response.status);
+    }
+    return response.json();
+  })
 /* ---------- theme ---------- */
 const root = document.documentElement;
 export function applyTheme(theme) {
