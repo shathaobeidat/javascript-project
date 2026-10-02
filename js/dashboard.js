@@ -1,5 +1,7 @@
 import { getDashboardData, STATUS } from './apiservice.js'
-const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+import { getSessionUser } from './layout.js';
+
+const currentUser = getSessionUser();
 
 if (!currentUser) {
     window.location.href = "./login.html";
