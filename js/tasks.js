@@ -1,4 +1,4 @@
-import{getCourses, addTask, deleteTask, getTasks} from '../apiservice.js';
+import{getCourses, addTask, deleteTask, getTasks} from '../js/apiservice.js';
 const title = document.getElementById("title");
 const description = document.getElementById("description");
 const dueDate = document.getElementById("dueDate");
@@ -56,7 +56,7 @@ async function renderTasks() {
         title.textContent = `${task.title} - ${task.dueDate}`;
         p.textContent = task.description;
         btn.textContent = "delete";
-        card.classList.add("card");
+        card.classList.add("task-item");
         container.classList.add("task-card-container");
         btn.classList.add("delete");
         btn.addEventListener("click", async function () {

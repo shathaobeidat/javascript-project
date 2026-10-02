@@ -1,283 +1,727 @@
-import { getStudents, getCourses, STATUS } from './api.js';
-import { getSession, clearSession } from './session.js';
-
-/* ---------- Theme toggle (light / dark) ---------- */
-function initTheme() {
-  const root = document.documentElement;
-  const btn = $('theme-btn');
-  let saved = null;
-  try { saved = localStorage.getItem('theme'); } catch {}
-  const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
-
-  const apply = (theme, persist) => {
-    root.dataset.theme = theme;
-    btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
-    if (persist) { try { localStorage.setItem('theme', theme); } catch {} }   // only the user's click saves
-  };
-  apply(saved || (prefersDark ? 'dark' : 'light'), false);                    // restore saved choice on load
-  btn.addEventListener('click', () => apply(root.dataset.theme === 'dark' ? 'light' : 'dark', true));
-}
 
 
-/* =====================  Settings (edit here)  ===================== */
-const REQUIRE_LOGIN = false;                // true = send users to the login page when not logged in
-const LOGIN_PAGE = 'login.html';
-const SUPPORT_EMAIL = 'support@university.edu';
-const DEFAULT_PAGE = 'dashboard';           // page opened when the URL has no #hash
-/* ================================================================= */
+export const BASE_URL = 'http://localhost:3000';
 
-const $ = (id) => document.getElementById(id);
-const user = getSession();                  // { id, name, email, role } saved by the login page
+/** Shared constants — use these instead of typing the strings by hand. */
+export const STATUS = Object.freeze({
+  ACTIVE: 'Active',
+  AT_RISK: 'At risk',
+  ARCHIVED: 'Archived',
+});
 
-/* ---------- Toast ---------- */
-let toastTimer;
-function showToast(msg) {
-  const toast = $('toast');
-  if (!toast) return;
-  toast.textContent = msg;
-  toast.hidden = false;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => (toast.hidden = true), 3000);
-}
 
-/* ---------- Sidebar navigation ----------
-   Clicking an item updates the title + URL hash and fires a "page-change" event.
-   Teammates listen to it to draw their page inside #page-content:
-
-     window.addEventListener('page-change', (e) => {
-       const { page, params } = e.detail;   // page = 'students', params = { courseId: 2 }
-     });
-   or call:  import { navigate } from './layout.js';  navigate('students', { id: 5 });
-*/
-const navItems = [...document.querySelectorAll('.nav-item')];
-const pageOf = (a) => a.getAttribute('href').replace('#', '');
-const pageFromHash = () => {
-  const p = location.hash.slice(1);
-  return navItems.some((a) => pageOf(a) === p) ? p : null;
-};
-
-/** @param {'push'|'replace'|'none'} mode how to touch the browser history */
-function navigate(page, params = {}, mode = 'push') {
-  const target = navItems.find((a) => pageOf(a) === page);
-  if (!target) return;
-
-  navItems.forEach((a) => {
-    const on = a === target;
-    a.classList.toggle('active', on);
-    if (on) a.setAttribute('aria-current', 'page');
-    else a.removeAttribute('aria-current');
-  });
-  $('page-title').textContent = target.querySelector('span').textContent;
-
-  if (mode !== 'none') history[mode === 'push' ? 'pushState' : 'replaceState'](null, '', `#${page}`);
-  window.dispatchEvent(new CustomEvent('page-change', { detail: { page, params } }));
-}
-
-function initNav() {
-  navItems.forEach((a) =>
-    a.addEventListener('click', (e) => {
-      e.preventDefault();
-      navigate(pageOf(a));
-    })
-  );
-  window.addEventListener('popstate', () => navigate(pageFromHash() || DEFAULT_PAGE, {}, 'none')); // back / forward
-  navigate(pageFromHash() || DEFAULT_PAGE, {}, 'replace');                                       // first load
-}
-
-/* ---------- Logged-in user (avatar + menu header) ---------- */
-function initials(name = '') {
-  // "Dr. shatha" -> "S" , "Lina Haddad" -> "LH"
-  const parts = name.replace(/^dr\.?\s+/i, '').trim().split(/\s+/).filter(Boolean);
-  return parts.slice(0, 2).map((p) => p[0].toUpperCase()).join('') || '?';
-}
-
-function initUser() {
-  const name = user?.name || 'Guest';
-  document.querySelector('.avatar').textContent = initials(name);
-
-  const btn = $('profile-btn');
-  btn.title = name;
-  btn.setAttribute('aria-label', `Account menu for ${name}`);
-
-  const head = document.createElement('div');
-  head.className = 'menu-head';
-  const strong = document.createElement('strong');
-  strong.textContent = name;
-  const small = document.createElement('small');
-  small.textContent = user?.role || '';
-  head.append(strong, small);
-  $('profile-menu').prepend(head);
-}
-
-/* ---------- Notifications badge = number of "At risk" students ---------- */
-async function refreshBadge() {
-  const badge = $('badge');
+async function request(path, options = {}) {
+  let response;
   try {
-    const atRisk = await getStudents({ status: STATUS.AT_RISK });
-    badge.textContent = atRisk.length;
-    badge.hidden = atRisk.length === 0;
-    $('notif-btn').setAttribute('aria-label', `Alerts, ${atRisk.length} students at risk`);
-  } catch (err) {
-    badge.hidden = true;
-    showToast(err.message);                 // "Cannot reach the API ... Is json-server running?"
-  }
-}
-
-function initNotifications() {
-  $('badge').hidden = true;                 // hidden until the real number arrives
-  $('notif-btn').addEventListener('click', () => navigate('alerts'));
-  refreshBadge();
-}
-
-/* ---------- Search (students + courses from the API) ---------- */
-function initSearch() {
-  const input = $('search');
-
-  // build the results box under the search bar (no HTML change needed)
-  const label = input.closest('.search');
-  const wrap = document.createElement('div');
-  wrap.className = 'search-wrap';
-  const box = document.createElement('div');
-  box.className = 'results';
-  box.hidden = true;
-  label.replaceWith(wrap);
-  wrap.append(label, box);
-
-  let courses = [];
-  getCourses().then((c) => (courses = c)).catch(() => {});
-
-  const close = () => { box.hidden = true; box.replaceChildren(); };
-
-  const row = (title, sub, page, params) => {
-    const a = document.createElement('a');
-    a.className = 'result';
-    a.href = `#${page}`;
-    const t = document.createElement('strong'); t.textContent = title;
-    const s = document.createElement('small');  s.textContent = sub;
-    a.append(t, s);
-    a.addEventListener('click', (e) => {
-      e.preventDefault();
-      close();
-      input.value = '';
-      navigate(page, params);
+    response = await fetch(`${BASE_URL}${path}`, {
+      headers: { 'Content-Type': 'application/json' },
+      ...options,
     });
-<<<<<<< HEAD:apiservice.js
-    return a;
-=======
   } catch {
-    throw new Error(`Cannot reach the API at ${BASE_URL}. Is json-server running?`);
+    throw new Error(
+      `Cannot reach the API at ${BASE_URL}. Is json-server running?`
+    );
   }
+
   if (!response.ok) {
-    throw new Error(`${options.method || 'GET'} ${path} failed (${response.status})`);
+    throw new Error(
+      `${options.method || 'GET'} ${path} failed (${response.status})`
+    );
   }
+
   return response.json();
 }
 
 const send = (method, path, body) =>
-  request(path, { method, body: body === undefined ? undefined : JSON.stringify(body) });
+  request(path, {
+    method,
+    body:
+      body === undefined
+        ? undefined
+        : JSON.stringify(body),
+  });
 
-/** Build "?a=1&b=2", skipping empty values. */
 function toQuery(params = {}) {
   const q = new URLSearchParams();
+
   Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== '') q.append(key, value);
+    if (
+      value !== undefined &&
+      value !== null &&
+      value !== ''
+    ) {
+      q.append(key, value);
+    }
   });
+
   const str = q.toString();
   return str ? `?${str}` : '';
 }
 
+const NUMERIC_FIELDS = [
+  'courseId',
+  'grade',
+  'attendanceRate',
+  'progress',
+  'pendingGrading',
+];
 
-const NUMERIC_FIELDS = ['courseId', 'grade', 'attendanceRate', 'progress', 'pendingGrading'];
 function normalize(data) {
   const out = { ...data };
+
   NUMERIC_FIELDS.forEach((field) => {
-    if (out[field] !== undefined && out[field] !== '') out[field] = Number(out[field]);
+    if (
+      out[field] !== undefined &&
+      out[field] !== ''
+    ) {
+      out[field] = Number(out[field]);
+    }
   });
+
   return out;
 }
 
 const withoutPassword = ({ password, ...user }) => user;
 
 const average = (list, key) =>
-  list.length ? Math.round((list.reduce((sum, item) => sum + Number(item[key]), 0) / list.length) * 10) / 10 : 0;
+  list.length
+    ? Math.round(
+        (
+          list.reduce(
+            (sum, item) => sum + Number(item[key]),
+            0
+          ) / list.length
+        ) * 10
+      ) / 10
+    : 0;
 
-/**
- * @returns {Promise<object|null>} the user (without password) or null if credentials are wrong
- */
+
+/* =========================
+   AUTH
+========================= */
+
 export async function loginUser(email, password) {
-  const users = await request(`/users${toQuery({ email: String(email).trim().toLowerCase() })}`);
-  const user = users.find((u) => u.password === password);
+  const users = await request(
+    `/users${toQuery({
+      email: String(email).trim().toLowerCase(),
+    })}`
+  );
+
+  const user = users.find(
+    (u) => u.password === password
+  );
+
   return user ? withoutPassword(user) : null;
 }
 
-/**
- * @param {{name:string,email:string,password:string,role?:string}} userData
- * @throws if the email is already registered
- * @returns {Promise<object>} the created user (without password)
- */
 export async function registerUser(userData) {
-  const email = String(userData.email).trim().toLowerCase();
-  const existing = await request(`/users${toQuery({ email })}`);
-  if (existing.length) throw new Error('This email is already registered.');
-  const created = await send('POST', '/users', { role: 'instructor', ...userData, email });
+  const email = String(userData.email)
+    .trim()
+    .toLowerCase();
+
+  const existing = await request(
+    `/users${toQuery({ email })}`
+  );
+
+  if (existing.length) {
+    throw new Error(
+      'This email is already registered.'
+    );
+  }
+
+  const created = await send('POST', '/users', {
+    role: 'instructor',
+    ...userData,
+    email,
+  });
+
   return withoutPassword(created);
 }
 
 
-export const getCourses = () => request('/courses');
+/* =========================
+   COURSES
+========================= */
 
-/** @throws if the course code already exists */
+export const getCourses = () =>
+  request('/courses');
+
+const nameKey = (name) =>
+  String(name)
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLowerCase();
+
 export async function addCourse(courseData) {
-  const code = String(courseData.code).trim().toUpperCase();
-  const existing = await request(`/courses${toQuery({ code })}`);
-  if (existing.length) throw new Error(`Course ${code} already exists.`);
-  return send('POST', '/courses', { ...courseData, code, name: String(courseData.name).trim() });
+  const code = String(courseData.code)
+    .trim()
+    .toUpperCase();
+
+  const name = String(courseData.name).trim();
+
+  if (!code || !name) {
+    throw new Error(
+      'Course code and course name are required.'
+    );
+  }
+
+  const all = await request('/courses');
+
+  if (
+    all.some(
+      (c) =>
+        String(c.code).trim().toUpperCase() === code
+    )
+  ) {
+    throw new Error(
+      `Course ${code} already exists.`
+    );
+  }
+
+  if (
+    all.some(
+      (c) => nameKey(c.name) === nameKey(name)
+    )
+  ) {
+    throw new Error(
+      `A course named "${name}" already exists.`
+    );
+  }
+
+  return send('POST', '/courses', {
+    code,
+    name,
+  });
 }
 
-/** @param {{courseId?:number|string,status?:string,q?:string}} [filters] optional */
-export const getStudents = (filters = {}) => request(`/students${toQuery(filters)}`);
+export async function deleteCourse(id) {
+  const [students, tasks] = await Promise.all([
+    request(
+      `/students${toQuery({ courseId: id })}`
+    ),
+    request(
+      `/tasks${toQuery({ courseId: id })}`
+    ),
+  ]);
 
-export const addStudent = (studentData) =>
-  send('POST', '/students', { status: STATUS.ACTIVE, ...normalize(studentData) });
+  if (students.length || tasks.length) {
+    throw new Error(
+      `This course still has ${students.length} student(s) and ${tasks.length} task(s). Remove them first.`
+    );
+  }
 
-/** Partial update (PATCH): send only the fields that changed. */
-export const updateStudent = (id, studentData) => send('PATCH', `/students/${id}`, normalize(studentData));
-
-export const deleteStudent = (id) => send('DELETE', `/students/${id}`);
-
-
-export const getTasks = () => request('/tasks'); //omar
-
-export const getTasksByCourse = (courseId) => request(`/tasks${toQuery({ courseId })}`);
-
-/** New tasks start with 0 progress and nothing waiting for grading. */
-export const addTask = (taskData) =>
-  send('POST', '/tasks', { progress: 0, pendingGrading: 0, ...normalize(taskData) });    //OMAR
-
-export const deleteTask = (id) => send('DELETE', `/tasks/${id}`);      //OMAR
+  return send('DELETE', `/courses/${id}`);
+}
 
 
-const GRADE_LABELS = ['A', 'B', 'C', 'D', 'F'];
-const gradeBucket = (grade) => (grade >= 90 ? 0 : grade >= 80 ? 1 : grade >= 70 ? 2 : grade >= 60 ? 3 : 4);
+/* =========================
+   STUDENTS
+========================= */
 
-/**
- * One call for the whole dashboard.
- * @param {{courseId?:number|string}} [options] limit everything to one course
- * @returns {Promise<{
- *   stats:{totalStudents:number,avgAttendance:number,avgGrade:number,pendingTasks:number,activeTasks:number},
- *   statusCounts:Record<string,number>,
- *   gradeDistribution:{labels:string[],counts:number[],percentages:number[]},
- *   courseSummaries:object[], activeTasks:object[],
- *   students:object[], courses:object[], tasks:object[]
- * }>}
+export const getStudents = (filters = {}) =>
+  request(
+    `/students${toQuery(filters)}`
+  );
+
+
+/* =========================
+   CHECK UNIQUE STUDENT EMAIL
+========================= */
+
+async function validateStudentEmail(
+  email,
+  studentId = null
+) {
+  // Remove spaces and make email lowercase
+  const normalizedEmail = String(email)
+    .trim()
+    .toLowerCase();
+
+  // Check that email is not empty
+  if (!normalizedEmail) {
+    throw new Error(
+      'Student email is required.'
+    );
+  }
+
+  // Get all students
+  const students = await getStudents();
+
+  // Check if another student already uses this email
+  const emailExists = students.some(
+    (student) => {
+
+      const existingEmail = String(
+        student.email || ''
+      )
+        .trim()
+        .toLowerCase();
+
+      const sameEmail =
+        existingEmail === normalizedEmail;
+
+      /*
+       * If we are editing a student,
+       * don't consider that same student's
+       * email a duplicate.
+       */
+      const differentStudent =
+        studentId === null ||
+        String(student.id) !==
+          String(studentId);
+
+      return (
+        sameEmail &&
+        differentStudent
+      );
+    }
+  );
+
+  if (emailExists) {
+    throw new Error(
+      'This email is already used by another student.'
+    );
+  }
+
+  return normalizedEmail;
+}
+
+
+/* =========================
+   ADD STUDENT
+========================= */
+
+export async function addStudent(
+  studentData
+) {
+  // Check email before adding
+  const email =
+    await validateStudentEmail(
+      studentData.email
+    );
+
+  return send(
+    'POST',
+    '/students',
+    {
+      status: STATUS.ACTIVE,
+
+      ...normalize({
+        ...studentData,
+        email: email,
+      }),
+    }
+  );
+}
+
+
+/* =========================
+   UPDATE STUDENT
+========================= */
+
+export async function updateStudent(
+  id,
+  studentData
+) {
+  const data = {
+    ...studentData,
+  };
+
+  /*
+   * Check email only when an email
+   * is included in the update.
+   */
+  if (data.email !== undefined) {
+
+    data.email =
+      await validateStudentEmail(
+        data.email,
+        id
+      );
+  }
+
+  return send(
+    'PATCH',
+    `/students/${id}`,
+    normalize(data)
+  );
+}
+/* =========================
+   ATTENDANCE
+========================= */
+
+export const ATTENDANCE = Object.freeze({
+  PRESENT: 'Present',
+  ABSENT: 'Absent',
+});
+
+export const getAttendance = (filters = {}) =>
+  request(
+    `/attendance${toQuery(filters)}`
+  );
+
+
+/*
+ * Calculate attendance rate for one student.
+ *
+ * Formula:
+ *
+ * Present records / (Present + Absent records) * 100
+ *
+ * Example:
+ * 8 Present + 2 Absent
+ * = 8 / 10 * 100
+ * = 80%
+ *
+ * The calculation uses the actual attendance records,
+ * not the old attendanceRate value stored in students.
  */
-export async function getDashboardData({ courseId } = {}) {
-  const [allStudents, courses, allTasks] = await Promise.all([getStudents(), getCourses(), getTasks()]);
+export const calculateAttendanceRate = (
+  records,
+  studentId
+) => {
 
-  const cid = courseId ? Number(courseId) : null;
-  const students = cid ? allStudents.filter((s) => s.courseId === cid) : allStudents;
-  const tasks = cid ? allTasks.filter((t) => t.courseId === cid) : allTasks;
-  const courseById = Object.fromEntries(courses.map((c) => [c.id, c]));
+  const studentRecords = records.filter(
+    (record) => {
+
+      if (!record) {
+        return false;
+      }
+
+      if (
+        record.studentId === null ||
+        record.studentId === undefined
+      ) {
+        return false;
+      }
+
+      const sameStudent =
+        String(record.studentId) ===
+        String(studentId);
+
+      const validStatus =
+        record.status === ATTENDANCE.PRESENT ||
+        record.status === ATTENDANCE.ABSENT;
+
+      return sameStudent && validStatus;
+    }
+  );
+
+  if (!studentRecords.length) {
+    return 0;
+  }
+
+  const presentCount =
+    studentRecords.filter(
+      (record) =>
+        record.status === ATTENDANCE.PRESENT
+    ).length;
+
+  return Math.round(
+    (presentCount / studentRecords.length) * 100
+  );
+};
+
+
+/*
+ * Recalculate and save the attendanceRate
+ * of one student.
+ */
+async function refreshAttendanceRate(studentId) {
+
+  const records =
+    await getAttendance();
+
+  const rate =
+    calculateAttendanceRate(
+      records,
+      studentId
+    );
+
+  await send(
+    'PATCH',
+    `/students/${studentId}`,
+    {
+      attendanceRate: rate
+    }
+  );
+
+  return rate;
+}
+
+
+/*
+ * Add or update attendance.
+ *
+ * IMPORTANT:
+ * Do NOT use Number(studentId).
+ *
+ * JSON Server may generate string IDs such as:
+ *
+ * "aScZwmPGwVI"
+ *
+ * Number("aScZwmPGwVI") === NaN
+ *
+ * which can end up stored as null.
+ */
+export async function recordAttendance({
+  studentId,
+  date,
+  status,
+}) {
+
+  const existing =
+    await getAttendance({
+      studentId,
+      date,
+    });
+
+  const data = {
+    studentId: String(studentId),
+    date: date,
+    status: status,
+  };
+
+  let saved;
+
+  /*
+   * If a record already exists for this student
+   * on this date, update it.
+   */
+  if (existing.length) {
+
+    saved = await send(
+      'PATCH',
+      `/attendance/${existing[0].id}`,
+      data
+    );
+
+  }
+
+  /*
+   * Otherwise create a new attendance record.
+   */
+  else {
+
+    saved = await send(
+      'POST',
+      '/attendance',
+      data
+    );
+  }
+
+  /*
+   * Recalculate the student's attendance percentage
+   * after the attendance record changes.
+   */
+  await refreshAttendanceRate(
+    studentId
+  );
+
+  return saved;
+}
+
+
+/*
+ * Update an existing attendance record.
+ *
+ * This is especially important when the user changes
+ * the attendance DATE while editing a student.
+ */
+export async function updateAttendanceRecord(
+  recordId,
+  {
+    studentId,
+    date,
+    status
+  }
+) {
+
+  const allRecords =
+    await getAttendance();
+
+  /*
+   * Check whether another attendance record already
+   * exists for the same student and new date.
+   */
+  const duplicate =
+    allRecords.find(
+      (record) =>
+        String(record.id) !==
+          String(recordId) &&
+
+        String(record.studentId) ===
+          String(studentId) &&
+
+        record.date === date
+    );
+
+
+  let saved;
+
+
+  /*
+   * If another record already exists for the
+   * same student/date, update that record and
+   * delete the old record.
+   *
+   * This prevents duplicate attendance records.
+   */
+  if (duplicate) {
+
+    saved = await send(
+      'PATCH',
+      `/attendance/${duplicate.id}`,
+      {
+        studentId: String(studentId),
+        date: date,
+        status: status
+      }
+    );
+
+    await send(
+      'DELETE',
+      `/attendance/${recordId}`
+    );
+
+  }
+
+  /*
+   * Otherwise simply update the existing record.
+   */
+  else {
+
+    saved = await send(
+      'PATCH',
+      `/attendance/${recordId}`,
+      {
+        studentId: String(studentId),
+        date: date,
+        status: status
+      }
+    );
+  }
+
+
+  /*
+   * Recalculate attendance percentage
+   * after changing the record.
+   */
+  await refreshAttendanceRate(
+    studentId
+  );
+
+  return saved;
+}
+
+
+/* =========================
+   DELETE STUDENT
+========================= */
+
+export async function deleteStudent(id) {
+  /*
+   * Delete attendance records belonging to the
+   * student first so there are no orphan records.
+   */
+  const records = await getAttendance({
+    studentId: id,
+  });
+
+  await Promise.all(
+    records.map((record) =>
+      send(
+        'DELETE',
+        `/attendance/${record.id}`
+      )
+    )
+  );
+
+  return send(
+    'DELETE',
+    `/students/${id}`
+  );
+}
+
+
+/* =========================
+   TASKS
+========================= */
+
+export const getTasks = () =>
+  request('/tasks');
+
+export const getTasksByCourse = (courseId) =>
+  request(
+    `/tasks${toQuery({ courseId })}`
+  );
+
+export const addTask = (taskData) =>
+  send('POST', '/tasks', {
+    progress: 0,
+    pendingGrading: 0,
+    ...normalize(taskData),
+  });
+
+export const deleteTask = (id) =>
+  send('DELETE', `/tasks/${id}`);
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+const GRADE_LABELS = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'F',
+];
+
+const gradeBucket = (grade) =>
+  grade >= 90
+    ? 0
+    : grade >= 80
+    ? 1
+    : grade >= 70
+    ? 2
+    : grade >= 60
+    ? 3
+    : 4;
+
+export async function getDashboardData({
+  courseId,
+} = {}) {
+  const [
+    allStudents,
+    courses,
+    allTasks,
+  ] = await Promise.all([
+    getStudents(),
+    getCourses(),
+    getTasks(),
+  ]);
+
+  const cid = courseId
+    ? Number(courseId)
+    : null;
+
+  const students = cid
+    ? allStudents.filter(
+        (s) => s.courseId === cid
+      )
+    : allStudents;
+
+  const tasks = cid
+    ? allTasks.filter(
+        (t) => t.courseId === cid
+      )
+    : allTasks;
+
+  const courseById = Object.fromEntries(
+    courses.map((c) => [c.id, c])
+  );
 
   const statusCounts = {
     [STATUS.ACTIVE]: 0,
@@ -285,96 +729,42 @@ export async function getDashboardData({ courseId } = {}) {
     [STATUS.ARCHIVED]: 0,
 >>>>>>> 99fa58f86c879f860583192d0cba842d87a61285:js/apiservice.js
   };
-  const heading = (text) => {
-    const h = document.createElement('div');
-    h.className = 'result-head';
-    h.textContent = text;
-    return h;
+  const counts = [0, 0, 0, 0, 0];
+  students.forEach((s) => {
+    if (s.status in statusCounts) statusCounts[s.status] += 1;
+    counts[gradeBucket(Number(s.grade))] += 1;
+  });
+
+  const activeTasks = tasks
+    .map((t) => ({ ...t, courseCode: courseById[t.courseId]?.code ?? '', courseName: courseById[t.courseId]?.name ?? '' }))
+    .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+
+  return {
+    stats: {
+      totalStudents: students.length,
+      avgAttendance: average(students, 'attendanceRate'),
+      avgGrade: average(students, 'grade'),
+      pendingTasks: tasks.reduce((sum, t) => sum + Number(t.pendingGrading || 0), 0),
+      activeTasks: tasks.length,
+    },
+    statusCounts,
+    gradeDistribution: {
+      labels: GRADE_LABELS,
+      counts,
+      percentages: counts.map((n) => (students.length ? Math.round((n / students.length) * 100) : 0)),
+    },
+    courseSummaries: courses
+      .filter((c) => !cid || c.id === cid)
+      .map((c) => {
+        const group = students.filter((s) => s.courseId === c.id);
+        return {
+          courseId: c.id, code: c.code, name: c.name,
+          studentCount: group.length, avgGrade: average(group, 'grade'), avgAttendance: average(group, 'attendanceRate'),
+        };
+      }),
+    activeTasks,
+    students,
+    courses,
+    tasks,
   };
-
-  let timer;
-  let latest = 0;
-
-  async function run(q) {
-    const id = ++latest;
-    let students = [];
-    try { students = await getStudents({ q }); } catch (err) { showToast(err.message); return; }
-    if (id !== latest) return;              // a newer search already started
-
-    const term = q.toLowerCase();
-    const courseHits = courses.filter((c) =>
-      c.name.toLowerCase().includes(term) || c.code.toLowerCase().includes(term));
-    const codeById = Object.fromEntries(courses.map((c) => [c.id, c.code]));
-
-    box.replaceChildren();
-    if (!students.length && !courseHits.length) {
-      const empty = document.createElement('div');
-      empty.className = 'result-empty';
-      empty.textContent = 'No results';
-      box.append(empty);
-    }
-    if (students.length) {
-      box.append(heading('Students'));
-      students.slice(0, 5).forEach((s) =>
-        box.append(row(s.name, `${codeById[s.courseId] ?? ''} · ${s.status}`, 'students', { id: s.id })));
-    }
-    if (courseHits.length) {
-      box.append(heading('Courses'));
-      courseHits.slice(0, 4).forEach((c) =>
-        box.append(row(c.name, c.code, 'students', { courseId: c.id })));
-    }
-    box.hidden = false;
-  }
-
-  input.addEventListener('input', () => {
-    clearTimeout(timer);
-    const q = input.value.trim();
-    if (!q) { latest++; close(); return; }
-    timer = setTimeout(() => run(q), 250);  // debounce
-  });
-  document.addEventListener('click', (e) => { if (!box.contains(e.target) && e.target !== input) close(); });
-  document.addEventListener('keydown', (e) => {
-    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
-    if (e.key === '/' && !typing) { e.preventDefault(); input.focus(); }
-    if (e.key === 'Escape') close();
-  });
-}
-
-/* ---------- Avatar menu (Support + Logout) ---------- */
-function initMenu() {
-  const btn = $('profile-btn');
-  const menu = $('profile-menu');
-  const set = (open) => {
-    menu.hidden = !open;
-    btn.setAttribute('aria-expanded', String(open));
-  };
-  btn.addEventListener('click', (e) => { e.stopPropagation(); set(menu.hidden); });
-  document.addEventListener('click', (e) => { if (!menu.hidden && !menu.contains(e.target)) set(false); });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !menu.hidden) { set(false); btn.focus(); }
-  });
-
-  $('support-btn').addEventListener('click', () => {
-    set(false);
-    location.href = `mailto:${SUPPORT_EMAIL}?subject=Support%20request`;
-  });
-  $('logout-btn').addEventListener('click', () => {
-    set(false);
-    if (!confirm('Are you sure you want to log out?')) return;
-    clearSession();
-    showToast('Logged out');
-    setTimeout(() => (location.href = LOGIN_PAGE), 800);
-  });
-}
-
-/* ---------- Start ---------- */
-if (REQUIRE_LOGIN && !user) {
-  location.replace(LOGIN_PAGE);             // not logged in
-} else {
-  initTheme();
-  initUser();
-  initMenu();
-  initSearch();
-  initNotifications();
-  initNav();
 }
