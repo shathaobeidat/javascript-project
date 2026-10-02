@@ -27,6 +27,13 @@
       "email": "tala.aloqaili@gmail.com",
       "password": "wBj9-pQkGRj:iz8",
       "id": "gQwRNDCuVd4"
+    },
+    {
+      "role": "instructor",
+      "name": "sara",
+      "email": "sara@edu.com",
+      "password": "8Jn4Hgws-_ZyHUR",
+      "id": "NxGGNkl6ZtE"
     }
   ],
   "courses": [

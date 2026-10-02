@@ -727,7 +727,6 @@ export async function getDashboardData({
     [STATUS.ACTIVE]: 0,
     [STATUS.AT_RISK]: 0,
     [STATUS.ARCHIVED]: 0,
->>>>>>> 99fa58f86c879f860583192d0cba842d87a61285:js/apiservice.js
   };
   const counts = [0, 0, 0, 0, 0];
   students.forEach((s) => {
