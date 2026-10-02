@@ -1,52 +1,59 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Dr. shatha",
       "email": "rana@university.edu",
       "password": "password123",
       "role": "instructor"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Dr. Ahmad",
       "email": "ahmad@university.edu",
       "password": "password123",
       "role": "instructor"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Dr. tala",
       "email": "admin@university.edu",
       "password": "admin123",
       "role": "admin"
+    },
+    {
+      "role": "instructor",
+      "name": "yousef Jarrar",
+      "email": "yousef@university.edu",
+      "password": "Yousef1234",
+      "id": "KXylOVAYfXw"
     }
   ],
   "courses": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Data structures",
       "code": "CS301"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Software engineering",
       "code": "CS405"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Advanced algorithms",
       "code": "CS502"
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Discrete mathematics",
       "code": "MATH201"
     }
   ],
   "students": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Lina Haddad",
       "email": "lina.haddad@student.university.edu",
       "courseId": 1,
@@ -55,7 +62,7 @@
       "attendanceRate": 98
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Omar Khalil",
       "email": "omar.khalil@student.university.edu",
       "courseId": 2,
@@ -64,7 +71,7 @@
       "attendanceRate": 71
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Sara Nasser",
       "email": "sara.nasser@student.university.edu",
       "courseId": 3,
@@ -73,7 +80,7 @@
       "attendanceRate": 100
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Tariq Ziyad",
       "email": "tariq.ziyad@student.university.edu",
       "courseId": 1,
@@ -82,7 +89,7 @@
       "attendanceRate": 92
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Amina Saleh",
       "email": "amina.saleh@student.university.edu",
       "courseId": 1,
@@ -91,7 +98,7 @@
       "attendanceRate": 65
     },
     {
-      "id": 6,
+      "id": "6",
       "name": "Youssef Ali",
       "email": "youssef.ali@student.university.edu",
       "courseId": 2,
@@ -100,7 +107,7 @@
       "attendanceRate": 94
     },
     {
-      "id": 7,
+      "id": "7",
       "name": "Nour Mansour",
       "email": "nour.mansour@student.university.edu",
       "courseId": 3,
@@ -109,7 +116,7 @@
       "attendanceRate": 50
     },
     {
-      "id": 8,
+      "id": "8",
       "name": "Khaled Bitar",
       "email": "khaled.bitar@student.university.edu",
       "courseId": 1,
@@ -118,7 +125,7 @@
       "attendanceRate": 88
     },
     {
-      "id": 9,
+      "id": "9",
       "name": "Rania Jabr",
       "email": "rania.jabr@student.university.edu",
       "courseId": 2,
@@ -127,7 +134,7 @@
       "attendanceRate": 99
     },
     {
-      "id": 10,
+      "id": "10",
       "name": "Fadi Masri",
       "email": "fadi.masri@student.university.edu",
       "courseId": 3,
@@ -136,7 +143,7 @@
       "attendanceRate": 79
     },
     {
-      "id": 11,
+      "id": "11",
       "name": "Dana Qasem",
       "email": "dana.qasem@student.university.edu",
       "courseId": 4,
@@ -145,7 +152,7 @@
       "attendanceRate": 90
     },
     {
-      "id": 12,
+      "id": "12",
       "name": "Hamza Odeh",
       "email": "hamza.odeh@student.university.edu",
       "courseId": 4,
@@ -154,7 +161,7 @@
       "attendanceRate": 60
     },
     {
-      "id": 13,
+      "id": "13",
       "name": "Maya Suleiman",
       "email": "maya.suleiman@student.university.edu",
       "courseId": 2,
@@ -163,7 +170,7 @@
       "attendanceRate": 82
     },
     {
-      "id": 14,
+      "id": "14",
       "name": "Zaid Barakat",
       "email": "zaid.barakat@student.university.edu",
       "courseId": 4,
@@ -172,7 +179,7 @@
       "attendanceRate": 68
     },
     {
-      "id": 15,
+      "id": "15",
       "name": "Layla Hijazi",
       "email": "layla.hijazi@student.university.edu",
       "courseId": 1,
@@ -181,7 +188,7 @@
       "attendanceRate": 96
     },
     {
-      "id": 16,
+      "id": "16",
       "name": "Ibrahim Nabulsi",
       "email": "ibrahim.nabulsi@student.university.edu",
       "courseId": 3,
@@ -192,7 +199,7 @@
   ],
   "tasks": [
     {
-      "id": 1,
+      "id": "1",
       "title": "Linked list implementation",
       "description": "Implement a singly and doubly linked list with insert, delete and search.",
       "dueDate": "2026-10-08",
@@ -201,7 +208,7 @@
       "pendingGrading": 36
     },
     {
-      "id": 2,
+      "id": "2",
       "title": "Midterm problem set",
       "description": "Solve the 10 practice problems covering stacks, queues and trees.",
       "dueDate": "2026-10-15",
@@ -210,7 +217,7 @@
       "pendingGrading": 45
     },
     {
-      "id": 3,
+      "id": "3",
       "title": "UML design document",
       "description": "Produce class and sequence diagrams for the course project.",
       "dueDate": "2026-10-05",
@@ -219,7 +226,7 @@
       "pendingGrading": 28
     },
     {
-      "id": 4,
+      "id": "4",
       "title": "Sprint retrospective report",
       "description": "Write a one-page retrospective for your team's first sprint.",
       "dueDate": "2026-10-20",
@@ -228,7 +235,7 @@
       "pendingGrading": 12
     },
     {
-      "id": 5,
+      "id": "5",
       "title": "Dynamic programming quiz",
       "description": "Online quiz on memoization, tabulation and knapsack variants.",
       "dueDate": "2026-10-10",
@@ -237,7 +244,7 @@
       "pendingGrading": 8
     },
     {
-      "id": 6,
+      "id": "6",
       "title": "Graph algorithms assignment",
       "description": "Implement BFS, DFS and Dijkstra and compare their running times.",
       "dueDate": "2026-10-25",
@@ -246,7 +253,7 @@
       "pendingGrading": 5
     },
     {
-      "id": 7,
+      "id": "7",
       "title": "Matrix operations lab",
       "description": "Lab exercises on matrix multiplication and relations.",
       "dueDate": "2026-10-12",
@@ -255,7 +262,7 @@
       "pendingGrading": 14
     },
     {
-      "id": 8,
+      "id": "8",
       "title": "Probability worksheet",
       "description": "Worksheet on counting principles and basic probability.",
       "dueDate": "2026-11-01",
@@ -266,388 +273,389 @@
   ],
   "attendance": [
     {
-      "id": 1,
+      "id": "1",
       "studentId": 1,
       "date": "2026-09-28",
       "status": "Present"
     },
     {
-      "id": 2,
+      "id": "2",
       "studentId": 1,
       "date": "2026-09-29",
       "status": "Present"
     },
     {
-      "id": 3,
+      "id": "3",
       "studentId": 1,
       "date": "2026-09-30",
       "status": "Present"
     },
     {
-      "id": 4,
+      "id": "4",
       "studentId": 1,
       "date": "2026-10-01",
       "status": "Present"
     },
     {
-      "id": 5,
+      "id": "5",
       "studentId": 2,
       "date": "2026-09-28",
       "status": "Present"
     },
     {
-      "id": 6,
+      "id": "6",
       "studentId": 2,
       "date": "2026-09-29",
       "status": "Present"
     },
     {
-      "id": 7,
+      "id": "7",
       "studentId": 2,
       "date": "2026-09-30",
       "status": "Present"
     },
     {
-      "id": 8,
+      "id": "8",
       "studentId": 2,
       "date": "2026-10-01",
       "status": "Present"
     },
     {
-      "id": 9,
+      "id": "9",
       "studentId": 3,
       "date": "2026-09-28",
       "status": "Present"
     },
     {
-      "id": 10,
+      "id": "10",
       "studentId": 3,
       "date": "2026-09-29",
       "status": "Present"
     },
     {
-      "id": 11,
+      "id": "11",
       "studentId": 3,
       "date": "2026-09-30",
       "status": "Present"
     },
     {
-      "id": 12,
+      "id": "12",
       "studentId": 3,
       "date": "2026-10-01",
       "status": "Present"
     },
     {
-      "id": 13,
+      "id": "13",
       "studentId": 4,
       "date": "2026-09-28",
       "status": "Present"
     },
     {
-      "id": 14,
+      "id": "14",
       "studentId": 4,
       "date": "2026-09-29",
       "status": "Present"
     },
     {
-      "id": 15,
+      "id": "15",
       "studentId": 4,
       "date": "2026-09-30",
       "status": "Present"
     },
     {
-      "id": 16,
+      "id": "16",
       "studentId": 4,
       "date": "2026-10-01",
       "status": "Present"
     },
     {
-      "id": 17,
+      "id": "17",
       "studentId": 5,
       "date": "2026-09-28",
       "status": "Present"
     },
     {
-      "id": 18,
+      "id": "18",
       "studentId": 5,
       "date": "2026-09-29",
       "status": "Absent"
     },
     {
-      "id": 19,
+      "id": "19",
       "studentId": 5,
       "date": "2026-09-30",
       "status": "Present"
     },
     {
-      "id": 20,
+      "id": "20",
       "studentId": 5,
       "date": "2026-10-01",
       "status": "Present"
     },
     {
-      "id": 21,
+      "id": "21",
       "studentId": 6,
       "date": "2026-09-28",
       "status": "Absent"
     },
     {
-      "id": 22,
+      "id": "22",
       "studentId": 6,
       "date": "2026-09-29",
       "status": "Present"
     },
     {
-      "id": 23,
+      "id": "23",
       "studentId": 6,
       "date": "2026-09-30",
       "status": "Present"
     },
     {
-      "id": 24,
+      "id": "24",
       "studentId": 6,
       "date": "2026-10-01",
       "status": "Present"
     },
     {
-      "id": 25,
+      "id": "25",
       "studentId": 7,
       "date": "2026-09-28",
       "status": "Present"
     },
     {
-      "id": 26,
+      "id": "26",
       "studentId": 7,
       "date": "2026-09-29",
       "status": "Present"
     },
     {
-      "id": 27,
+      "id": "27",
       "studentId": 7,
       "date": "2026-09-30",
       "status": "Present"
     },
     {
-      "id": 28,
+      "id": "28",
       "studentId": 7,
       "date": "2026-10-01",
       "status": "Absent"
     },
     {
-      "id": 29,
+      "id": "29",
       "studentId": 8,
       "date": "2026-09-28",
       "status": "Present"
     },
     {
-      "id": 30,
+      "id": "30",
       "studentId": 8,
       "date": "2026-09-29",
       "status": "Present"
     },
     {
-      "id": 31,
+      "id": "31",
       "studentId": 8,
       "date": "2026-09-30",
       "status": "Present"
     },
     {
-      "id": 32,
+      "id": "32",
       "studentId": 8,
       "date": "2026-10-01",
       "status": "Present"
     },
     {
-      "id": 33,
+      "id": "33",
       "studentId": 9,
       "date": "2026-09-28",
       "status": "Present"
     },
     {
-      "id": 34,
+      "id": "34",
       "studentId": 9,
       "date": "2026-09-29",
       "status": "Present"
     },
     {
-      "id": 35,
+      "id": "35",
       "studentId": 9,
       "date": "2026-09-30",
       "status": "Present"
     },
     {
-      "id": 36,
+      "id": "36",
       "studentId": 9,
       "date": "2026-10-01",
       "status": "Present"
     },
     {
-      "id": 37,
+      "id": "37",
       "studentId": 10,
       "date": "2026-09-28",
       "status": "Present"
     },
     {
-      "id": 38,
+      "id": "38",
       "studentId": 10,
       "date": "2026-09-29",
       "status": "Present"
     },
     {
-      "id": 39,
+      "id": "39",
       "studentId": 10,
       "date": "2026-09-30",
       "status": "Present"
     },
     {
-      "id": 40,
+      "id": "40",
       "studentId": 10,
       "date": "2026-10-01",
       "status": "Present"
     },
     {
-      "id": 41,
+      "id": "41",
       "studentId": 11,
       "date": "2026-09-28",
       "status": "Present"
     },
     {
-      "id": 42,
+      "id": "42",
       "studentId": 11,
       "date": "2026-09-29",
       "status": "Present"
     },
     {
-      "id": 43,
+      "id": "43",
       "studentId": 11,
       "date": "2026-09-30",
       "status": "Present"
     },
     {
-      "id": 44,
+      "id": "44",
       "studentId": 11,
       "date": "2026-10-01",
       "status": "Present"
     },
     {
-      "id": 45,
+      "id": "45",
       "studentId": 12,
       "date": "2026-09-28",
       "status": "Present"
     },
     {
-      "id": 46,
+      "id": "46",
       "studentId": 12,
       "date": "2026-09-29",
       "status": "Present"
     },
     {
-      "id": 47,
+      "id": "47",
       "studentId": 12,
       "date": "2026-09-30",
       "status": "Present"
     },
     {
-      "id": 48,
+      "id": "48",
       "studentId": 12,
       "date": "2026-10-01",
       "status": "Absent"
     },
     {
-      "id": 49,
+      "id": "49",
       "studentId": 13,
       "date": "2026-09-28",
       "status": "Present"
     },
     {
-      "id": 50,
+      "id": "50",
       "studentId": 13,
       "date": "2026-09-29",
       "status": "Present"
     },
     {
-      "id": 51,
+      "id": "51",
       "studentId": 13,
       "date": "2026-09-30",
       "status": "Absent"
     },
     {
-      "id": 52,
+      "id": "52",
       "studentId": 13,
       "date": "2026-10-01",
       "status": "Present"
     },
     {
-      "id": 53,
+      "id": "53",
       "studentId": 14,
       "date": "2026-09-28",
       "status": "Present"
     },
     {
-      "id": 54,
+      "id": "54",
       "studentId": 14,
       "date": "2026-09-29",
       "status": "Absent"
     },
     {
-      "id": 55,
+      "id": "55",
       "studentId": 14,
       "date": "2026-09-30",
       "status": "Present"
     },
     {
-      "id": 56,
+      "id": "56",
       "studentId": 14,
       "date": "2026-10-01",
       "status": "Present"
     },
     {
-      "id": 57,
+      "id": "57",
       "studentId": 15,
       "date": "2026-09-28",
       "status": "Present"
     },
     {
-      "id": 58,
+      "id": "58",
       "studentId": 15,
       "date": "2026-09-29",
       "status": "Present"
     },
     {
-      "id": 59,
+      "id": "59",
       "studentId": 15,
       "date": "2026-09-30",
       "status": "Present"
     },
     {
-      "id": 60,
+      "id": "60",
       "studentId": 15,
       "date": "2026-10-01",
       "status": "Present"
     },
     {
-      "id": 61,
+      "id": "61",
       "studentId": 16,
       "date": "2026-09-28",
       "status": "Present"
     },
     {
-      "id": 62,
+      "id": "62",
       "studentId": 16,
       "date": "2026-09-29",
       "status": "Present"
     },
     {
-      "id": 63,
+      "id": "63",
       "studentId": 16,
       "date": "2026-09-30",
       "status": "Present"
     },
     {
-      "id": 64,
+      "id": "64",
       "studentId": 16,
       "date": "2026-10-01",
       "status": "Present"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

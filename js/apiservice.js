@@ -49,7 +49,7 @@ function normalize(data) {
   return out;
 }
 
-const withoutPassword = ({ password, ...user }) => user;
+const withoutPassword = ({ password, ...user }) => user;//yousef
 
 const average = (list, key) =>
   list.length ? Math.round((list.reduce((sum, item) => sum + Number(item[key]), 0) / list.length) * 10) / 10 : 0;
