@@ -197,7 +197,17 @@
       "attendanceRate": 91
     }
   ],
-  "tasks": [],
+  "tasks": [
+    {
+      "progress": 0,
+      "pendingGrading": 0,
+      "title": "ds",
+      "description": "ACCSC",
+      "dueDate": "2026-11-03",
+      "courseId": 3,
+      "id": "YoaTPdFeqA0"
+    }
+  ],
   "attendance": [
     {
       "id": "1",

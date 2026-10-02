@@ -26,7 +26,6 @@
 
         <section class="tasks-section">
 
-          <!-- LEFT: new task form -->
           <div class="tasks-form card">
             <h2 class="card-title">New assignment</h2>
 
@@ -45,12 +44,14 @@
               <label class="field" for="courseId">Publish to course <span class="req">*</span>
                 <select name="courseId" id="courseId" required></select>
               </label>
+              <label class="field" for="fileType">Add file
+                <input type="file" id="file">
+              </label>
             </div>
 
             <button id="publish-btn" type="button" class="btn btn--primary btn--block">Publish assignment</button>
           </div>
 
-          <!-- RIGHT: published tasks (tasks.js fills #task-cards) -->
           <div class="tasks-list card">
             <h2 class="card-title">Published assignments</h2>
             <div id="task-cards"></div>
