@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Solvably instructor dashboard for monitoring student performance, attendance, courses, and tasks."
+    >
+
+    <title>Dashboard | Solvably</title>
+
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+    <!-- Shared Sidebar -->
+    <aside class="sidebar">
+        
+    </aside>
+
+
+    <div class="main-wrapper">
+
+        <main class="main-content">
+
+                <!-- Dashboard Header -->
+    
+            <section class="dashboard-header">
+
+                <div class="dashboard-heading">
+
+                    <h1
+                        id="page-welcome"
+                        class="page-welcome"
+                    >
+                        
+                    </h1>
+
+                    <p
+                        id="dashboard-term"
+                        class="dashboard-term"
+                    >
+                        
+                    </p>
+
+                </div>
+
+            </section>
+
+
+                <!-- Course Filter -->
+    
+            <section class="dashboard-controls">
+
+                <div class="course-filter">
+
+                    <label for="course-filter">
+                        Course
+                    </label>
+
+                    <select id="course-filter">
+
+                        <option value="all">
+                            All Courses
+                        </option>
+
+                        <option value="CS301">
+                            CS301 - Data Structures
+                        </option>
+
+                        <option value="CS405">
+                            CS405 - Software Engineering
+                        </option>
+
+                        <option value="CS502">
+                            CS502 - Advanced Algorithms
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </section>
+
+
+                <!-- Dashboard Statistics -->
+    
+            <section class="dashboard-stats">
+
+                <h2 class="section-title">
+                    Overview
+                </h2>
+
+
+                <div class="stats-grid">
+
+
+                                <!-- Average Attendance -->
+            
+                    <article class="stats-card">
+
+                        <div class="stat-card-header">
+
+                            <h3 class="stats-card-title">
+                                Average Attendance
+                            </h3>
+
+                        </div>
+
+                        <p
+                            id="average-attendance-value"
+                            class="stat-card-value"
+                        >
+                            
+                        </p>
+
+                        <p class="stat-card-description">
+                            Overall Attendance
+                        </p>
+
+                    </article>
+
+
+                                <!-- Pending Tasks -->
+            
+                    <article class="stats-card">
+
+                        <div class="stat-card-header">
+
+                            <h3 class="stats-card-title">
+                                Pending Tasks
+                            </h3>
+
+                        </div>
+
+                        <p
+                            id="pending-tasks-value"
+                            class="stat-card-value"
+                        >
+                            
+                        </p>
+
+                        <p class="stat-card-description">
+                            Assignments waiting for grading
+                        </p>
+
+                    </article>
+
+
+                                <!-- Total Enrolled -->
+            
+                    <article class="stats-card">
+
+                        <div class="stat-card-header">
+
+                            <h3 class="stats-card-title">
+                                Total Enrolled
+                            </h3>
+
+                        </div>
+
+                        <p
+                            id="total-enrolled-value"
+                            class="stat-card-value"
+                        >
+                            
+                        </p>
+
+                        <p class="stat-card-description">
+                            Students
+                        </p>
+
+                    </article>
+
+
+                </div>
+
+            </section>
+
+
+                <!-- Grade Distribution -->
+    
+            <section class="analytics-section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2 class="section-title">
+                            Grade Distribution Analytics
+                        </h2>
+
+                        <p class="section-description">
+                            Weighted average across all registered courses
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-card">
+
+                    <canvas
+                        id="grade-distribution-chart"
+                        class="chart-container"
+                        aria-label="Grade distribution chart"
+                    >
+                    </canvas>
+
+                </div>
+
+            </section>
+
+
+                <!-- Active Tasks -->
+    
+            <section class="active-tasks-section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2 class="section-title">
+                            Active Tasks
+                        </h2>
+
+                        <p class="section-description">
+                            Current assignments that require attention
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="active-tasks-list"
+                    class="active-tasks-list"
+                >
+                    
+
+
+</div>
+
+            </section>
+
+
+
+
+    <!-- Students -->
+<!-- ==================== -->
+
+<section class="students-section">
+
+    <div class="students-header">
+
+        <div>
+
+            <h2 class="section-title">
+                Students
+            </h2>
+
+            <p class="section-description">
+                Student performance and attendance
+            </p>
+
+        </div>
+
+
+        <!-- Student Status Tabs -->
+
+        <div class="student-tabs">
+
+            <button
+                type="button"
+                class="student-tab active"
+                data-status="all"
+            >
+                All
+                <span id="all-students-count"></span>
+            </button>
+
+
+            <button
+                type="button"
+                class="student-tab"
+                data-status="active"
+            >
+                Active
+                <span id="active-students-count"></span>
+            </button>
+
+
+            <button
+                type="button"
+                class="student-tab"
+                data-status="risk"
+            >
+                At Risk
+                <span id="risk-students-count"></span>
+            </button>
+
+
+            <button
+                type="button"
+                class="student-tab"
+                data-status="archived"
+            >
+                Archive
+                <span id="archived-students-count"></span>
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Students Table -->
+
+    <div class="students-table-container">
+
+        <table class="students-table">
+
+            <thead>
+
+                <tr>
+
+                    <th scope="col">
+                        Student
+                    </th>
+
+                    <th scope="col">
+                        Course
+                    </th>
+
+                    <th scope="col">
+                        Performance
+                    </th>
+
+                    <th scope="col">
+                        Attendance
+                    </th>
+                    <th scope="col">
+                        Status
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="students-table-body"></tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+        </main>
+
+    </div>
+
+
+    <!-- JavaScript -->
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="../js/dashboard.js"></script>
+
+</body>
+
+</html>

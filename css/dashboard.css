@@ -1,0 +1,1292 @@
+/* =========================================================
+   1. Theme Variables
+========================================================= */
+
+:root {
+    --primary: #2563eb;
+    --primary-soft: #e8efff;
+
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-hover: #eef1f8;
+
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #e5e9f2;
+
+    --success: #047857;
+    --success-bg: #e7f8f0;
+
+    --warning: #b45309;
+    --warning-bg: #fff7e0;
+
+    --danger: #d93f45;
+
+    --radius: 20px;
+    --shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+
+    --sidebar-w: 256px;
+}
+
+
+/* =========================================================
+   Dark Theme
+========================================================= */
+
+[data-theme="dark"] {
+    --primary-soft: #1b2a52;
+
+    --bg: #0d1220;
+    --surface: #161d2f;
+    --surface-hover: #1f2842;
+
+    --text: #e8ecf5;
+    --muted: #8e99b3;
+    --border: #26304a;
+
+    --success-bg: #12362b;
+    --warning-bg: #3a2c10;
+}
+
+
+/* =========================================================
+   2. Reset + Base
+========================================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+
+    font-family:
+        system-ui,
+        -apple-system,
+        "Segoe UI",
+        sans-serif;
+
+    background: var(--bg);
+    color: var(--text);
+
+    line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+p {
+    margin: 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+select,
+input {
+    font: inherit;
+    color: inherit;
+}
+
+:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   3. Main Layout
+========================================================= */
+
+.sidebar {
+    position: fixed;
+
+    inset: 0 auto 0 0;
+
+    width: var(--sidebar-w);
+
+    display: flex;
+    flex-direction: column;
+
+    background: var(--surface);
+
+    border-right: 1px solid var(--border);
+
+    z-index: 20;
+}
+
+.main-wrapper {
+    margin-left: var(--sidebar-w);
+
+    min-height: 100vh;
+}
+
+.main-content {
+    width: 100%;
+    max-width: 1500px;
+
+    margin: 0 auto;
+
+    padding: 32px;
+
+    display: grid;
+    gap: 24px;
+}
+
+
+/* =========================================================
+   4. Sidebar
+========================================================= */
+
+.brand {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    height: 64px;
+
+    padding: 0 24px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.brand-logo {
+    display: grid;
+    place-items: center;
+
+    width: 32px;
+    height: 32px;
+
+    border-radius: 8px;
+
+    background: var(--primary);
+    color: #fff;
+
+    font-weight: 700;
+}
+
+.brand-name {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.nav {
+    display: grid;
+
+    gap: 4px;
+
+    padding: 24px 16px;
+}
+
+.nav-link {
+    padding: 12px 16px;
+
+    border-radius: 12px;
+
+    color: var(--muted);
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.nav-link:hover {
+    background: var(--surface-hover);
+}
+
+.nav-link.active {
+    background: var(--primary-soft);
+
+    color: var(--primary);
+
+    font-weight: 600;
+}
+
+.sidebar-user {
+    margin-top: auto;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    margin: auto 16px 16px;
+
+    padding: 12px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+}
+
+.sidebar-user-name {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.sidebar-user-email {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.avatar {
+    display: grid;
+    place-items: center;
+
+    width: 32px;
+    height: 32px;
+
+    border-radius: 50%;
+
+    background: var(--primary-soft);
+
+    color: var(--primary);
+
+    font-size: 12px;
+    font-weight: 700;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   5. Top Bar
+========================================================= */
+
+.topbar {
+    position: sticky;
+
+    top: 0;
+
+    z-index: 10;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    height: 64px;
+
+    padding: 0 32px;
+
+    background: var(--surface);
+
+    border-bottom: 1px solid var(--border);
+}
+
+.search {
+    width: min(576px, 100%);
+
+    padding: 10px 16px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    background: var(--bg);
+}
+
+.profile {
+    position: relative;
+}
+
+.profile-btn {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 6px 10px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    background: var(--surface);
+
+    cursor: pointer;
+}
+
+.profile-menu {
+    position: absolute;
+
+    right: 0;
+    top: calc(100% + 8px);
+
+    min-width: 160px;
+
+    margin: 0;
+    padding: 6px;
+
+    list-style: none;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 10px 30px rgba(15, 23, 42, 0.12);
+}
+
+.profile-menu[hidden] {
+    display: none;
+}
+
+.profile-menu a,
+.profile-menu button {
+    display: block;
+
+    width: 100%;
+
+    padding: 10px 12px;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    background: none;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.profile-menu a:hover,
+.profile-menu button:hover {
+    background: var(--surface-hover);
+}
+
+#signout-btn {
+    color: var(--danger);
+}
+
+
+/* =========================================================
+   6. Dashboard Header
+========================================================= */
+
+.dashboard-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    flex-wrap: wrap;
+
+    padding-bottom: 4px;
+}
+
+.dashboard-heading {
+    display: grid;
+    gap: 6px;
+}
+
+.page-welcome {
+    font-size: clamp(24px, 3vw, 32px);
+
+    font-weight: 800;
+
+    letter-spacing: -0.5px;
+}
+
+.dashboard-term {
+    font-size: 14px;
+
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   7. Course Filter
+========================================================= */
+
+.dashboard-controls {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-start;
+}
+
+.course-filter {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    width: 100%;
+    max-width: 380px;
+
+    padding: 10px 14px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    box-shadow: var(--shadow);
+}
+
+.course-filter label {
+    flex-shrink: 0;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: var(--muted);
+}
+
+.course-filter select {
+    width: 100%;
+
+    border: 0;
+
+    outline: 0;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   8. Section Headers
+========================================================= */
+
+.section-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    margin-bottom: 16px;
+}
+
+.section-title {
+    font-size: 20px;
+
+    font-weight: 750;
+
+    letter-spacing: -0.2px;
+}
+
+.section-description {
+    margin-top: 5px;
+
+    font-size: 13px;
+
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   9. Statistics Cards
+========================================================= */
+
+.dashboard-stats {
+    display: grid;
+
+    gap: 16px;
+}
+
+.stats-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+.stats-card {
+    position: relative;
+
+    min-height: 150px;
+
+    padding: 22px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow);
+
+    overflow: hidden;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.stats-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 4px;
+    height: 100%;
+
+    background: var(--primary);
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.stat-card-header {
+    margin-bottom: 10px;
+}
+
+.stats-card-title {
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: var(--muted);
+}
+
+.stats-card-value {
+    margin: 8px 0;
+
+    font-size: clamp(28px, 3vw, 36px);
+
+    line-height: 1;
+
+    font-weight: 800;
+}
+
+.stats-card-description {
+    font-size: 13px;
+
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   10. Chart
+========================================================= */
+
+.analytics-section {
+    display: grid;
+    gap: 16px;
+}
+
+.chart-card {
+    min-height: 280px;
+
+    padding: 24px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow);
+}
+
+.chart-container {
+    width: 100%;
+    min-height: 230px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   Chart generated elements
+========================================================= */
+
+.chart {
+    display: flex;
+
+    width: 100%;
+
+    gap: 12px;
+}
+
+.chart-axis {
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    height: 180px;
+
+    margin-bottom: 28px;
+
+    font-size: 11px;
+
+    color: var(--muted);
+
+    text-align: right;
+}
+
+.chart-plot {
+    position: relative;
+
+    flex: 1;
+
+    height: 180px;
+
+    margin-bottom: 28px;
+}
+
+.chart-lines {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+}
+
+.chart-lines i {
+    height: 1px;
+
+    background: var(--border);
+}
+
+.chart-bars {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+}
+
+.bar-col {
+    position: relative;
+
+    flex: 1;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: flex-end;
+
+    align-items: center;
+}
+
+.bar {
+    width: 40px;
+
+    min-height: 4px;
+
+    border-radius: 8px 8px 0 0;
+
+    background: var(--primary);
+
+    transition:
+        height 0.4s ease,
+        opacity 0.2s ease;
+}
+
+.bar:hover {
+    opacity: 0.8;
+}
+
+.bar-label {
+    position: absolute;
+
+    bottom: -24px;
+
+    font-size: 12px;
+
+    color: var(--muted);
+}
+
+.bar-a {
+    background: #2563eb;
+}
+
+.bar-b {
+    background: #475569;
+}
+
+.bar-c {
+    background: #16a34a;
+}
+
+.bar-d {
+    background: #84cc16;
+}
+
+.bar-f {
+    background: #0f766e;
+}
+
+
+/* =========================================================
+   Active Tasks
+========================================================= */
+
+.active-tasks-section {
+    display: grid;
+    gap: 16px;
+}
+
+.active-tasks-list {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+/* Task Card */
+
+.task-card {
+    padding: 20px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 16px;
+
+    box-shadow: var(--shadow);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.task-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+
+/* Course + Date */
+
+.task-top {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 12px;
+}
+
+.task-course {
+    font-size: 13px;
+
+    font-weight: 700;
+
+    color: var(--primary);
+}
+
+.task-due {
+    font-size: 12px;
+
+    font-weight: 400;
+
+    color: var(--muted);
+}
+
+
+/* Task Name */
+
+.task-title {
+    margin-bottom: 18px;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    color: var(--text);
+}
+
+
+/* Progress */
+
+.task-progress-text {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 7px;
+
+    font-size: 12px;
+
+    color: var(--muted);
+}
+
+.task-progress-text strong {
+    color: var(--text);
+}
+
+.progress {
+    width: 100%;
+
+    height: 8px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: var(--border);
+}
+
+.progress-fill {
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: var(--primary);
+
+    transition: width 0.4s ease;
+}
+
+
+/* Awaiting Grading */
+
+.task-pending {
+    margin-top: 12px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: var(--danger);
+}
+
+
+/* =========================================================
+   Students Header
+========================================================= */
+
+.students-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    flex-wrap: wrap;
+
+    padding: 22px 24px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+/* =========================================================
+   Student Tabs
+========================================================= */
+
+.student-tabs {
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 4px;
+
+    background: var(--bg);
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+}
+
+.student-tab {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 8px 12px;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: var(--muted);
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.student-tab:hover {
+    color: var(--text);
+
+    background: var(--surface-hover);
+}
+
+.student-tab.active {
+    background: var(--surface);
+
+    color: var(--primary);
+
+    box-shadow:
+        0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+
+/* Number inside tab */
+
+.student-tab span {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 20px;
+    height: 20px;
+
+    padding: 0 5px;
+
+    border-radius: 999px;
+
+    background: var(--surface-hover);
+
+    color: var(--muted);
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+.student-tab.active span {
+    background: var(--primary-soft);
+
+    color: var(--primary);
+}
+
+/* =========================================================
+   13. Students Table
+========================================================= */
+
+.students-table-container {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.students-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 650px;
+}
+
+.students-table th {
+    padding: 15px 24px;
+
+    text-align: left;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    color: var(--muted);
+
+    background: var(--bg);
+
+    border-bottom: 1px solid var(--border);
+
+    white-space: nowrap;
+}
+
+.students-table td {
+    padding: 16px 24px;
+
+    border-bottom: 1px solid var(--border);
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+.students-table tbody tr {
+    transition:
+        background 0.2s ease;
+}
+
+.students-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.students-table tbody tr:hover {
+    background: var(--surface-hover);
+}
+
+.student-cell {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+.student-initial {
+    display: grid;
+
+    place-items: center;
+
+    width: 36px;
+    height: 36px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: var(--primary-soft);
+
+    color: var(--primary);
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+.student-id {
+    display: block;
+
+    margin-top: 2px;
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        monospace;
+
+    font-size: 11px;
+
+    font-weight: 400;
+
+    color: var(--muted);
+}
+
+.empty {
+    padding: 32px !important;
+
+    text-align: center;
+
+    color: var(--muted);
+
+    font-weight: 400;
+}
+
+
+/* =========================================================
+   14. Status
+========================================================= */
+
+.status {
+    display: inline-block;
+
+    padding: 4px 12px;
+
+    border-radius: 999px;
+
+    border: 1px solid transparent;
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+.status-active {
+    background: var(--success-bg);
+
+    color: var(--success);
+}
+
+.status-risk {
+    background: var(--warning-bg);
+
+    color: var(--warning);
+}
+
+.status-archived {
+    background: var(--surface-hover);
+
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   15. Error Message
+========================================================= */
+
+.error-message {
+    padding: 12px 16px;
+
+    border-radius: 12px;
+
+    background: #fdecec;
+
+    color: var(--danger);
+}
+
+.error-message[hidden] {
+    display: none;
+}
+
+
+.status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.status-active {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.status-risk {
+    background: var(--warning-bg);
+    color: var(--warning);
+}
+
+.status-archived {
+    background: var(--surface-hover);
+    color: var(--muted);
+}
+
+/* =========================================================
+   16. Responsive
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .active-tasks-list {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .stats-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 900px) {
+
+    .sidebar {
+        display: none;
+    }
+
+    .main-wrapper {
+        margin-left: 0;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .topbar {
+        padding: 0 20px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .active-tasks-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .main-content {
+        padding: 16px;
+        gap: 20px;
+    }
+
+    .page-welcome {
+        font-size: 24px;
+    }
+
+    .dashboard-term {
+        font-size: 13px;
+    }
+
+    .course-filter {
+        max-width: none;
+    }
+
+    .chart-card {
+        padding: 16px;
+    }
+
+    .students-section .section-header {
+        padding: 18px;
+    }
+
+    .students-table th,
+    .students-table td {
+        padding: 13px 16px;
+    }
+}

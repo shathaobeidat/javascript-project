@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create account | Gradify</title>
+  <link rel="icon" href="../assets/logo.jpeg">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('gradify:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){}</script>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/signup.css">
+</head>
+<body class="auth-page">
+  <main class="auth-card">
+    <div class="auth-brand">
+      <img src="../assets/logo.jpeg" alt="">
+      <h1>Gradify</h1>
+    </div>
+    <h2 class="auth-title">Create your account</h2>
+
+    <form class="auth-form" id="signup-form">
+      <label class="field" for="name">Full name
+        <input type="text" id="name" name="fullname" placeholder="Dr. Rana Haddad" autocomplete="name" required>
+      </label>
+      <label class="field" for="email">Email
+        <input type="email" id="email" name="email" placeholder="name@university.edu" autocomplete="email" required>
+      </label>
+      <label class="field" for="password">Password
+        <input type="password" id="password" name="password" placeholder="At least 8 characters" autocomplete="new-password"
+               required minlength="8" maxlength="30" pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}">
+      </label>
+      <div class="auth-hints" id="password-message" aria-live="polite">
+        <p id="leangh-number"></p>
+        <p id="uppercas"></p>
+        <p id="lawercase"></p>
+        <p id="one-number"></p>
+      </div>
+      <label class="field" for="confarm">Confirm password
+        <input type="password" id="confarm" name="confirm" placeholder="Repeat your password" autocomplete="new-password" required>
+      </label>
+      <button type="submit" class="btn btn--primary btn--block" id="Sign-up">Create account</button>
+      <p class="auth-msg" id="signup-message" role="alert"></p>
+    </form>
+
+    <p class="auth-switch">Have an account? <a href="login.html">Sign in</a></p>
+  </main>
+  <script type="module" src="../js/signup.js"></script>
+</body>
+</html>
