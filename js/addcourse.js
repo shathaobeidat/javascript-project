@@ -5,8 +5,16 @@
 import {
   getCourses,
   addCourse,
-  deleteCourse
+  deleteCourse,
+  requireInstructor
 } from './apiservice.js';
+
+
+/*
+ * Instructor-specific page: redirects to login.html when nobody is logged in.
+ * getCourses/addCourse/deleteCourse only work on the current instructor's courses.
+ */
+requireInstructor();
 
 
 /* =========================

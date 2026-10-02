@@ -10,13 +10,20 @@ import {
   recordAttendance,
   updateAttendanceRecord,
   calculateAttendanceRate,
+  requireInstructor,
   ATTENDANCE
 } from './apiservice.js';
 
 
-/* =========================
-   HELPERS
-========================= */
+/*
+ * Instructor-specific page: if nobody is logged in this redirects to
+ * login.html and stops the script. getStudents/getCourses/getAttendance and
+ * every add/update/delete in apiservice.js are scoped to this instructor.
+ */
+requireInstructor();
+
+
+
 
 const $ = (id) =>
   document.getElementById(id);

@@ -1,4 +1,8 @@
-import{getCourses, addTask, deleteTask, getTasks} from '../js/apiservice.js';
+import{getCourses, addTask, deleteTask, getTasks, requireInstructor} from '../js/apiservice.js';
+
+// Redirects to login.html when nobody is logged in.
+// getCourses/getTasks/addTask/deleteTask only work on the current instructor's data.
+requireInstructor();
 const title = document.getElementById("title");
 const description = document.getElementById("description");
 const dueDate = document.getElementById("dueDate");
@@ -32,7 +36,12 @@ pubBtn.addEventListener("click", async function(event){
         alert("Fill all fields");
         return;
     }
-    await addTask({ title: titleV, description: descriptionV, dueDate: dueDateV, courseId: courseIdV });
+    try {
+        await addTask({ title: titleV, description: descriptionV, dueDate: dueDateV, courseId: courseIdV });
+    } catch (error) {
+        alert(error.message);
+        return;
+    }
 
     title.value="";
     description.value="";
@@ -60,7 +69,11 @@ async function renderTasks() {
         container.classList.add("task-card-container");
         btn.classList.add("delete");
         btn.addEventListener("click", async function () {
-            await deleteTask(task.id);
+            try {
+                await deleteTask(task.id);
+            } catch (error) {
+                alert(error.message);
+            }
             renderTasks();
         })
         card.appendChild(container);
@@ -71,4 +84,3 @@ async function renderTasks() {
     }
 }
 renderTasks();
-
