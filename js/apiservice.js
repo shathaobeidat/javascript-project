@@ -1,15 +1,17 @@
+
+
 export const BASE_URL = 'http://localhost:3000';
 
-/** Shared constants */
+/** Shared constants — use these instead of typing the strings by hand. */
 export const STATUS = Object.freeze({
   ACTIVE: 'Active',
   AT_RISK: 'At risk',
   ARCHIVED: 'Archived',
 });
 
+
 async function request(path, options = {}) {
   let response;
-
   try {
     response = await fetch(`${BASE_URL}${path}`, {
       headers: { 'Content-Type': 'application/json' },
@@ -726,130 +728,39 @@ export async function getDashboardData({
     [STATUS.AT_RISK]: 0,
     [STATUS.ARCHIVED]: 0,
   };
-
   const counts = [0, 0, 0, 0, 0];
-
-  students.forEach((student) => {
-    if (
-      student.status in statusCounts
-    ) {
-      statusCounts[student.status]++;
-    }
-
-    counts[
-      gradeBucket(
-        Number(student.grade)
-      )
-    ]++;
+  students.forEach((s) => {
+    if (s.status in statusCounts) statusCounts[s.status] += 1;
+    counts[gradeBucket(Number(s.grade))] += 1;
   });
 
   const activeTasks = tasks
-    .map((task) => ({
-      ...task,
-      courseCode:
-        courseById[task.courseId]?.code ??
-        '',
-      courseName:
-        courseById[task.courseId]?.name ??
-        '',
-    }))
-    .sort((a, b) =>
-      a.dueDate.localeCompare(
-        b.dueDate
-      )
-    );
+    .map((t) => ({ ...t, courseCode: courseById[t.courseId]?.code ?? '', courseName: courseById[t.courseId]?.name ?? '' }))
+    .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
 
   return {
     stats: {
-      totalStudents:
-        students.length,
-
-      avgAttendance:
-        average(
-          students,
-          'attendanceRate'
-        ),
-
-      avgGrade:
-        average(
-          students,
-          'grade'
-        ),
-
-      pendingTasks:
-        tasks.reduce(
-          (sum, task) =>
-            sum +
-            Number(
-              task.pendingGrading || 0
-            ),
-          0
-        ),
-
-      activeTasks:
-        tasks.length,
+      totalStudents: students.length,
+      avgAttendance: average(students, 'attendanceRate'),
+      avgGrade: average(students, 'grade'),
+      pendingTasks: tasks.reduce((sum, t) => sum + Number(t.pendingGrading || 0), 0),
+      activeTasks: tasks.length,
     },
-
     statusCounts,
-
     gradeDistribution: {
       labels: GRADE_LABELS,
       counts,
-
-      percentages:
-        counts.map((count) =>
-          students.length
-            ? Math.round(
-                (count /
-                  students.length) *
-                  100
-              )
-            : 0
-        ),
+      percentages: counts.map((n) => (students.length ? Math.round((n / students.length) * 100) : 0)),
     },
-
-    courseSummaries:
-      courses
-        .filter(
-          (c) =>
-            !cid ||
-            c.id === cid
-        )
-        .map((course) => {
-          const group =
-            students.filter(
-              (student) =>
-                student.courseId ===
-                course.id
-            );
-
-          return {
-            courseId:
-              course.id,
-
-            code:
-              course.code,
-
-            name:
-              course.name,
-
-            studentCount:
-              group.length,
-
-            avgGrade:
-              average(
-                group,
-                'grade'
-              ),
-
-            avgAttendance:
-              average(
-                group,
-                'attendanceRate'
-              ),
-          };
-        }),
-
+    courseSummaries: courses
+      .filter((c) => !cid || c.id === cid)
+      .map((c) => {
+        const group = students.filter((s) => s.courseId === c.id);
+        return {
+          courseId: c.id, code: c.code, name: c.name,
+          studentCount: group.length, avgGrade: average(group, 'grade'), avgAttendance: average(group, 'attendanceRate'),
+        };
+      }),
     activeTasks,
     students,
     courses,
