@@ -1,17 +1,12 @@
-// tasks.js — Assignments page. All data comes from apiservice.js.
-import { getCourses, addTask, deleteTask, getTasks } from './apiservice.js';
-import { showToast } from './layout.js';
+import{getCourses, addTask, deleteTask, getTasks, requireInstructor} from '../js/apiservice.js';
+const title = document.getElementById("title");
+const description = document.getElementById("description");
+const dueDate = document.getElementById("dueDate");
+const courseId = document.getElementById("courseId");
+const pubBtn = document.getElementById("publish-btn");
+const tasksCards = document.getElementById("task-cards");
 
-const $ = (id) => document.getElementById(id);
-const title = $('title');
-const description = $('description');
-const dueDate = $('dueDate');
-const courseId = $('courseId');
-const fileInput = $('file');
-const pubBtn = $('publish-btn');
-const tasksCards = $('task-cards');
-
-let courses = [];
+requireInstructor();
 
 async function loadCourses() {
   try {

@@ -208,51 +208,6 @@
   ],
   "tasks": [
     {
-      "id": "1",
-      "title": "Linked list implementation",
-      "description": "Implement a singly and doubly linked list with insert, delete and search.",
-      "dueDate": "2026-10-08",
-      "courseId": 1,
-      "progress": 80,
-      "pendingGrading": 36
-    },
-    {
-      "id": "2",
-      "title": "Midterm problem set",
-      "description": "Solve the 10 practice problems covering stacks, queues and trees.",
-      "dueDate": "2026-10-15",
-      "courseId": 1,
-      "progress": 38,
-      "pendingGrading": 45
-    },
-    {
-      "id": "3",
-      "title": "UML design document",
-      "description": "Produce class and sequence diagrams for the course project.",
-      "dueDate": "2026-10-05",
-      "courseId": 2,
-      "progress": 94,
-      "pendingGrading": 28
-    },
-    {
-      "id": "4",
-      "title": "Sprint retrospective report",
-      "description": "Write a one-page retrospective for your team's first sprint.",
-      "dueDate": "2026-10-20",
-      "courseId": 2,
-      "progress": 55,
-      "pendingGrading": 12
-    },
-    {
-      "id": "5",
-      "title": "Dynamic programming quiz",
-      "description": "Online quiz on memoization, tabulation and knapsack variants.",
-      "dueDate": "2026-10-10",
-      "courseId": 3,
-      "progress": 90,
-      "pendingGrading": 8
-    },
-    {
       "id": "6",
       "title": "Graph algorithms assignment",
       "description": "Implement BFS, DFS and Dijkstra and compare their running times.",
@@ -278,13 +233,6 @@
       "courseId": 4,
       "progress": 10,
       "pendingGrading": 0
-      "progress": 0,
-      "pendingGrading": 0,
-      "title": "ds",
-      "description": "ACCSC",
-      "dueDate": "2026-11-03",
-      "courseId": 3,
-      "id": "YoaTPdFeqA0"
     }
   ],
   "attendance": [
@@ -305,9 +253,6 @@
       "studentId": "1",
       "date": "2026-09-30",
       "status": "Absent"
-      "studentId": 1,
-      "date": "2026-09-30",
-      "status": "Present"
     },
     {
       "id": "4",
@@ -336,7 +281,6 @@
     {
       "id": "8",
       "studentId": "2",
-      "studentId": 2,
       "date": "2026-10-01",
       "status": "Absent"
     },
