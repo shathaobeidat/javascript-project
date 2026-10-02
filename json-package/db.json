@@ -58,8 +58,8 @@
       "email": "lina.haddad@student.university.edu",
       "courseId": 1,
       "status": "Active",
-      "grade": 92,
-      "attendanceRate": 98
+      "grade": 90,
+      "attendanceRate": 67
     },
     {
       "id": "2",
@@ -68,7 +68,7 @@
       "courseId": 2,
       "status": "At risk",
       "grade": 64,
-      "attendanceRate": 71
+      "attendanceRate": 75
     },
     {
       "id": "3",
@@ -195,10 +195,89 @@
       "status": "Active",
       "grade": 86,
       "attendanceRate": 91
+    },
+    {
+      "status": "Active",
+      "name": "abdullah",
+      "email": "abdullah@student.university",
+      "courseId": 2,
+      "grade": 98,
+      "attendanceRate": 100,
+      "id": "XqvalwcY6mI"
     }
   ],
   "tasks": [
     {
+      "id": "1",
+      "title": "Linked list implementation",
+      "description": "Implement a singly and doubly linked list with insert, delete and search.",
+      "dueDate": "2026-10-08",
+      "courseId": 1,
+      "progress": 80,
+      "pendingGrading": 36
+    },
+    {
+      "id": "2",
+      "title": "Midterm problem set",
+      "description": "Solve the 10 practice problems covering stacks, queues and trees.",
+      "dueDate": "2026-10-15",
+      "courseId": 1,
+      "progress": 38,
+      "pendingGrading": 45
+    },
+    {
+      "id": "3",
+      "title": "UML design document",
+      "description": "Produce class and sequence diagrams for the course project.",
+      "dueDate": "2026-10-05",
+      "courseId": 2,
+      "progress": 94,
+      "pendingGrading": 28
+    },
+    {
+      "id": "4",
+      "title": "Sprint retrospective report",
+      "description": "Write a one-page retrospective for your team's first sprint.",
+      "dueDate": "2026-10-20",
+      "courseId": 2,
+      "progress": 55,
+      "pendingGrading": 12
+    },
+    {
+      "id": "5",
+      "title": "Dynamic programming quiz",
+      "description": "Online quiz on memoization, tabulation and knapsack variants.",
+      "dueDate": "2026-10-10",
+      "courseId": 3,
+      "progress": 90,
+      "pendingGrading": 8
+    },
+    {
+      "id": "6",
+      "title": "Graph algorithms assignment",
+      "description": "Implement BFS, DFS and Dijkstra and compare their running times.",
+      "dueDate": "2026-10-25",
+      "courseId": 3,
+      "progress": 20,
+      "pendingGrading": 5
+    },
+    {
+      "id": "7",
+      "title": "Matrix operations lab",
+      "description": "Lab exercises on matrix multiplication and relations.",
+      "dueDate": "2026-10-12",
+      "courseId": 4,
+      "progress": 70,
+      "pendingGrading": 14
+    },
+    {
+      "id": "8",
+      "title": "Probability worksheet",
+      "description": "Worksheet on counting principles and basic probability.",
+      "dueDate": "2026-11-01",
+      "courseId": 4,
+      "progress": 10,
+      "pendingGrading": 0
       "progress": 0,
       "pendingGrading": 0,
       "title": "ds",
@@ -223,6 +302,9 @@
     },
     {
       "id": "3",
+      "studentId": "1",
+      "date": "2026-09-30",
+      "status": "Absent"
       "studentId": 1,
       "date": "2026-09-30",
       "status": "Present"
@@ -253,9 +335,10 @@
     },
     {
       "id": "8",
+      "studentId": "2",
       "studentId": 2,
       "date": "2026-10-01",
-      "status": "Present"
+      "status": "Absent"
     },
     {
       "id": "9",
@@ -592,6 +675,144 @@
       "studentId": 16,
       "date": "2026-10-01",
       "status": "Present"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "QeySf-KBnMQ"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "ZH9_DQ1FIxs"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "bquw24cL8fM"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "KFnKa1iQY0c"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "03YwnzLpxZo"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "Zq1uH9HLKAo"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "RhXXQXDsojE"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Absent",
+      "id": "k-yBNJ7_Ngg"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-01",
+      "status": "Present",
+      "id": "fdxrIx2VwqU"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-01",
+      "status": "Present",
+      "id": "jmIQ3wBTvOA"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-01",
+      "status": "Present",
+      "id": "TMyPhNqXMfI"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "QxbrtiXPrbs"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "_2mYK9d04k8"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-01",
+      "status": "Present",
+      "id": "yhYSY4aZcao"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "_5hII7kdlH4"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "FRfMfv3pCxc"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "sYQSGX2-nXc"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "_zxOEgLY2wM"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "yduH0vQJdIQ"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "x6SVBGhyq-E"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "pxGYDlev1NM"
+    },
+    {
+      "studentId": null,
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "KEVEsvJLumY"
+    },
+    {
+      "studentId": "XqvalwcY6mI",
+      "date": "2026-10-02",
+      "status": "Present",
+      "id": "-hrb1A2Joxw"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
