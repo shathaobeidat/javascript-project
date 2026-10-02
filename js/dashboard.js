@@ -1,4 +1,9 @@
 import { getDashboardData, STATUS } from './apiservice.js'
+const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+if (!currentUser) {
+    window.location.href = "./login.html";
+}
 
 const pageWelcome = document.getElementById("page-welcome");
 
@@ -31,25 +36,34 @@ const activeStudentsCount = document.getElementById("active-students-count");
 const riskStudentsCount = document.getElementById("risk-students-count");
 const archivedStudentsCount = document.getElementById("archived-students-count");
 
+const data = await getDashboardData({
+    instructorId: currentUser.id
+});
+
+pageWelcome.textContent = `Welcome back, ${currentUser.name}`;
+
 let allStudents = [];
 let allCourses = [];
 let allTasks = [];
+let gradeChart = null;
 
 
 
 async function loadDashboard() {
 
-    const data = await getDashboardData();
+    const data = await getDashboardData({
+            instructorId: currentUser.id
+        });    
     
-    
-    console.log("renderStudents called");
-    console.log("DATA:", data);
-    console.log("STUDENTS:", data.students);
-    console.log("STUDENTS LENGTH:", data.students?.length);
-    console.log("TABLE:", studentsTableBody);
+    console.log("CURRENT USER:", currentUser);
+        console.log("DASHBOARD DATA:", data);
 
 
-    new Chart(gradeDistributionChart, {
+    if (gradeChart) {
+    gradeChart.destroy();
+    }   
+
+    gradeChart = new Chart(gradeDistributionChart, {
         type: "bar",
 
         data: {
@@ -157,13 +171,13 @@ function renderStudents(students, courses) {
     students.forEach(student => {
 
         const course = courses.find(
-            course => course.id === student.courseId
+            course => Number(course.id) === Number(student.courseId)
         );
 
         studentsTableBody.innerHTML += `
             <tr>
                 <td>${student.name}</td>
-                <td>${course ? course.code : "-"}</td>
+                <td>${course ? `${course.code} - ${course.name}` : "-"}</td>
                 <td>${student.grade}%</td>
                 <td>${student.attendanceRate}%</td>
                 <td>
@@ -226,9 +240,7 @@ function renderTasks(tasks) {
                     ></div>
                 </div>
 
-                <p class="task-pending">
-                    ${task.pendingGrading} awaiting for grading
-                </p>
+                
 
             </article>
         `;
@@ -252,25 +264,81 @@ function renderCourseFilter(courses) {
     });
 }
 
-courseFilter.addEventListener("change", () => {
+function updateDashboard(data) {
+    averageAttendanceValue.textContent = `${data.stats.avgAttendance}%`;
+    pendingTasksValue.textContent = data.stats.pendingTasks;
+    totalEnrolledValue.textContent = data.stats.totalStudents;
 
-    const selectedCourseId = courseFilter.value;
+    allStudents = data.students;
+    allCourses = data.courses;
+    allTasks = data.tasks;
 
-    let filteredTasks;
+    renderTasks(data.tasks);
+    renderStudents(data.students, data.courses);
 
-    if (selectedCourseId === "") {
+    allStudentsCount.textContent = allStudents.length;
 
-        filteredTasks = allTasks;
+    activeStudentsCount.textContent =
+        allStudents.filter(
+            student => student.status === STATUS.ACTIVE
+        ).length;
 
-    } else {
+    riskStudentsCount.textContent =
+        allStudents.filter(
+            student => student.status === STATUS.AT_RISK
+        ).length;
 
-        filteredTasks = allTasks.filter(
-            task => task.courseId === Number(selectedCourseId)
-        );
+    archivedStudentsCount.textContent =
+        allStudents.filter(
+            student => student.status === STATUS.ARCHIVED
+        ).length;
 
+    if (gradeChart) {
+        gradeChart.destroy();
     }
 
-    renderTasks(filteredTasks);
+    gradeChart = new Chart(gradeDistributionChart, {
+        type: "bar",
+        data: {
+            labels: data.gradeDistribution.labels,
+            datasets: [{
+                label: "student",
+                data: data.gradeDistribution.counts,
+                backgroundColor: [
+                    "#22c55e",
+                    "#3b82f6",
+                    "#f59e0b",
+                    "#f97316",
+                    "#ef4444"
+                ],
+                borderRadius: {
+                    topLeft: 20,
+                    topRight: 20,
+                },
+                barThickness: 65,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+}
+
+courseFilter.addEventListener("change", async () => {
+    const selectedCourseId = courseFilter.value;
+
+    try {
+        const data = await getDashboardData({
+            instructorId: currentUser.id,
+            courseId: selectedCourseId || undefined
+        });
+
+        updateDashboard(data);
+
+    } catch (error) {
+        console.error("Failed to change course:", error);
+    }
 });
 
 studentTabs.forEach(tab => {
