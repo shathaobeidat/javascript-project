@@ -1,68 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Gradify | Assignments  </title>
-  <link rel="icon" href="../assets/logo.jpeg">
-  <script>try{document.documentElement.dataset.theme=localStorage.getItem('gradify:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){}</script>
-  <link rel="stylesheet" href="../css/theme.css">
-  <link rel="stylesheet" href="../css/layout.css">
-  <link rel="stylesheet" href="../css/tasks.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Portal || Tasks</title>
+    <link rel="stylesheet" href="../css/tasks.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    
 </head>
 <body>
-  <div class="app-shell">
-    <aside id="app-sidebar"></aside>
-    <div class="app-body">
-      <div id="app-header"></div>
+    <div class="grid">
+        <header></header>
+        <div class="sidebar"></div>
+        <main>
+            <h1>Tasks</h1>
+            <p>Create a task and publish it to one of your courses.</p>
+            <section class="tasks-section">
+                <div class="form card">
+                    <div class="field">
+                        <label for="title">Task name <span>*</span></label>
+                        <input type="text" id="title" placeholder="e.g. Binary tree assignment" required>                        
+                    </div>
+                    <div class="field">
+                        <label for="description">Description <span>*</span></label>
+                        <textarea id="description" rows="4"  placeholder="What should students do?" required></textarea>                     
+                    </div>
+                    <div class="field-flex">
+                        <div class="field">
+                            <label for="dueDate">Deadline <span>*</span></label>
+                            <input type="date" id="dueDate" required>                     
+                        </div> 
+                        <div class="field">
+                            <label for="courseId">Publish to course <span>*</span></label>
+                            <select name="courseId" id="courseId" required>
+                                <!-- <option value="cs99">cs99</option> -->
+                                <!-- <option value="dynamics">dynamics</option> -->
+                                <!-- <option value="machineLearning">machineLearning</option> -->
+                            </select>                     
+                        </div>                         
+                    </div> 
+                    <button id="publish-btn">Publish task</button>
 
-      <main class="app-main page">
-        <div class="page-head">
-          <div>
-            <h1 class="page-title">Assignments</h1>
-            <p class="page-subtitle">Create an assignment and publish it to one of your courses.</p>
-          </div>
-        </div>
+                </div>
+                <div class="list card" id="task-cards">
 
-        <section class="tasks-section">
-
-          <div class="tasks-form card">
-            <h2 class="card-title">New assignment</h2>
-
-            <label class="field" for="title">Assignment name <span class="req">*</span>
-              <input type="text" id="title" placeholder="e.g. Binary tree assignment" required>
-            </label>
-
-            <label class="field" for="description">Description <span class="req">*</span>
-              <textarea id="description" rows="4" placeholder="What should students do?" required></textarea>
-            </label>
-
-            <div class="form-row">
-              <label class="field" for="dueDate">Deadline <span class="req">*</span>
-                <input type="date" id="dueDate" required>
-              </label>
-              <label class="field" for="courseId">Publish to course <span class="req">*</span>
-                <select name="courseId" id="courseId" required></select>
-              </label>
-              <label class="field" for="file">Add file
-                <input type="file" id="file">
-              </label>
-            </div>
-
-            <button id="publish-btn" type="button" class="btn btn--primary btn--block">Publish assignment</button>
-          </div>
-
-          <div class="tasks-list card">
-            <h2 class="card-title">Published assignments</h2>
-            <div id="task-cards"></div>
-          </div>
-
-        </section>
-      </main>
+                </div>
+            </section>
+        </main>
     </div>
-  </div>
-
-  <script type="module" src="../js/layout.js"></script>
-  <script type="module" src="../js/tasks.js"></script>
+    <script src="../js/tasks.js" type="module"></script>
 </body>
 </html>

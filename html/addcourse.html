@@ -1,320 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  >
-
-  <title>Gradify - Add Course</title>
-
-  <!--
-    IMPORTANT:
-    Load the saved theme BEFORE loading the CSS.
-    This prevents the page from flashing or appearing
-    with the wrong colors when Dark Mode is enabled.
-  -->
-  <script>
-    try {
-      document.documentElement.dataset.theme =
-        localStorage.getItem('gradify:theme') ||
-        (
-          window.matchMedia &&
-          window.matchMedia('(prefers-color-scheme: dark)').matches
-            ? 'dark'
-            : 'light'
-        );
-    } catch (e) {
-      document.documentElement.dataset.theme = 'light';
-    }
-  </script>
-
-  <link
-    rel="stylesheet"
-    href="../css/theme.css"
-  >
-
-  <link
-    rel="stylesheet"
-    href="../css/layout.css"
-  >
-
-  <link
-    rel="stylesheet"
-    href="../css/addcourse.css"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Add a new course | Solvably</title>
+  <link rel="stylesheet" href="../css/theme.css">      
+  <link rel="stylesheet" href="../css/layout.css">    
+  <link rel="stylesheet" href="../css/addcourse.css"> 
 </head>
-
-
 <body>
-
   <div class="app-shell">
-
-    <!-- Sidebar is injected by layout.js -->
     <aside id="app-sidebar"></aside>
-
-
     <div class="app-body">
-
-      <!-- Header is injected by layout.js -->
       <div id="app-header"></div>
 
-
-      <main
-        id="crs-content"
-        class="crs-page"
-      >
-
-        <!-- Page title -->
-
-        <header class="crs-page-head">
-
-          <div>
-
-            <h1 class="crs-title">
-              Add a new course
-            </h1>
-
-            <p class="crs-subtitle">
-              Create a course and manage your existing courses.
-            </p>
-
-          </div>
-
-        </header>
-
-
-        <!--
-          Main grid
-        -->
-
+      <main id="crs-content" class="crs-page">
+      
+          <h1 class="crs-title">Add a new course</h1>
+          
         <div class="crs-grid">
-
-
-          <!-- =========================
-               COURSE FORM
-          ========================== -->
-
-          <section
-            class="crs-card"
-            aria-labelledby="course-details-title"
-          >
-
-            <h2
-              id="course-details-title"
-              class="crs-card-title"
-            >
-              Course details
-            </h2>
-
-
-            <form
-              id="crs-form"
-              class="crs-form"
-              novalidate
-            >
-
-
-              <!-- Course code -->
-
-              <label
-                class="crs-field"
-                for="crs-code"
-              >
-
-                <span>
-                  Course code
-                  <span class="crs-required">*</span>
-                </span>
-
-
-                <input
-                  id="crs-code"
-                  name="code"
-                  type="text"
-                  required
-                  maxlength="10"
-                  autocomplete="off"
-                  placeholder="e.g. CS610"
-                >
-
+       
+          <section class="crs-card">
+            <h2 class="crs-card-title">Course details</h2>
+            <form id="crs-form" class="crs-form" >
+              <label class="crs-field">Course code *
+                <input id="crs-code" required maxlength="10" placeholder="e.g. CS610" >
+       
+              </label>
+              <label class="crs-field">Course name *
+                <input id="crs-name" required maxlength="60" placeholder="Data-structure">
               </label>
 
-
-              <!-- Course name -->
-
-              <label
-                class="crs-field"
-                for="crs-name"
-              >
-
-                <span>
-                  Course name
-                  <span class="crs-required">*</span>
-                </span>
-
-
-                <input
-                  id="crs-name"
-                  name="name"
-                  type="text"
-                  required
-                  maxlength="60"
-                  autocomplete="off"
-                  placeholder="e.g. Data structures"
-                >
-
-              </label>
-
-
-              <!-- Error message -->
-
-              <p
-                class="crs-msg crs-msg--error"
-                id="crs-error"
-                role="alert"
-                hidden
-              ></p>
-
-
-              <!-- Success message -->
-
-              <p
-                class="crs-msg crs-msg--success"
-                id="crs-success"
-                role="status"
-                hidden
-              ></p>
-
-
-              <!-- Buttons -->
+              <p class="crs-msg crs-msg--error" id="crs-error" role="alert" hidden></p>
+              <p class="crs-msg crs-msg--success" id="crs-success" role="status" hidden></p>
 
               <div class="crs-actions">
-
-                <button
-                  type="reset"
-                  class="crs-btn"
-                  id="crs-reset"
-                >
-                  Clear
-                </button>
-
-
-                <button
-                  type="submit"
-                  class="crs-btn crs-btn--primary"
-                  id="crs-submit"
-                >
-                  <span id="crs-submit-text">
-                    Add course
-                  </span>
-
-                  <span
-                    id="crs-submit-loading"
-                    class="crs-loading"
-                    hidden
-                  >
-                    Adding...
-                  </span>
-
-                </button>
-
+                <button type="reset" class="crs-btn" id="crs-reset">Clear</button>
+                <button type="submit" class="crs-btn crs-btn--primary" id="crs-submit">Add course</button>
               </div>
-
             </form>
-
           </section>
 
-
-
-          <!-- =========================
-               EXISTING COURSES
-          ========================== -->
-
-          <section
-            class="crs-card"
-            aria-labelledby="existing-courses-title"
-          >
-
-            <h2
-              id="existing-courses-title"
-              class="crs-card-title"
-            >
-
-              <span>
-                Existing courses
-              </span>
-
-              <span
-                class="crs-count"
-                id="crs-count"
-              >
-                0
-              </span>
-
-            </h2>
-
-
-            <!-- Loading -->
-
-            <p
-              class="crs-loading-list"
-              id="crs-loading-list"
-              hidden
-            >
-              Loading courses...
-            </p>
-
-
-            <!-- Course list -->
-
-            <ul
-              class="crs-list"
-              id="crs-list"
-            ></ul>
-
-
-            <!-- Empty state -->
-
-            <p
-              class="crs-empty"
-              id="crs-empty"
-              hidden
-            >
-              No courses yet.
-            </p>
-
+          
+          <section class="crs-card">
+            <h2 class="crs-card-title">Existing courses <span class="crs-count" id="crs-count">0</span></h2>
+            <ul class="crs-list" id="crs-list"></ul>
+            <p class="crs-empty" id="crs-empty" hidden>No courses yet.</p>
           </section>
-
         </div>
-
       </main>
-
     </div>
-
   </div>
 
-
-  <!-- Shared layout -->
-
-  <script
-    type="module"
-    src="../js/layout.js"
-  ></script>
-
-
-  <!-- Add course functionality -->
-
-  <script
-    type="module"
-    src="../js/addcourse.js"
-  ></script>
-
+  <script type="module" src="../js/layout.js"></script>   
+  <script type="module" src="addcourse.js"></script>
 </body>
-
 </html>
