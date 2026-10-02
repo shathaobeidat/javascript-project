@@ -42,7 +42,6 @@ const data = await getDashboardData({
     instructorId: currentUser.id
 });
 
-pageWelcome.textContent = `Welcome back, ${currentUser.name}`;
 
 let allStudents = [];
 let allCourses = [];
