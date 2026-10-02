@@ -1,10 +1,12 @@
-import{getCourses, addTask, deleteTask, getTasks} from '../js/apiservice.js';
+import{getCourses, addTask, deleteTask, getTasks, requireInstructor} from '../js/apiservice.js';
 const title = document.getElementById("title");
 const description = document.getElementById("description");
 const dueDate = document.getElementById("dueDate");
 const courseId = document.getElementById("courseId");
 const pubBtn = document.getElementById("publish-btn");
 const tasksCards = document.getElementById("task-cards");
+
+requireInstructor();
 
 async function loadCourses() {
     const course= await getCourses();    
