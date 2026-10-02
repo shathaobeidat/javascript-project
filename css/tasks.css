@@ -33,8 +33,6 @@
   --sidebar-bg: #081330;
 }
 
-
-
 *{
     box-sizing: border-box;
     padding: 0;
@@ -47,29 +45,13 @@ body {
   color: var(--text);
   transition: background var(--transition), color var(--transition);
 }
-.grid{
-    display: grid;
-    grid-template-columns: 100px 1fr;
-    grid-template-areas: "header header" "sidebar main";
-}
 .tasks-section{
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     margin-top: 10px;
 }
-/* header{
-    grid-area: header;
-    height: 60px;
-    
-}
-.sidebar{
-    grid-area: sidebar;
-    
-    height: 100vh;
-} */
 main{
-    grid-area: main;
     padding: 10px;
 }
 .card{
