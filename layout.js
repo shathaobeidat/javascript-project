@@ -14,7 +14,19 @@ items.forEach(item => {
     title.textContent = item.querySelector('span').textContent;
   });
 });
-
+fetch('db.json') 
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("HTTP error! Status: " + response.status);
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log("JSON sucsessful:", data);
+  })
+  .catch(error => {
+    console.error("ERROR", error);
+  });
 /* ---------- Toast helper ---------- */
 const toast = document.getElementById('toast');
 let toastTimer;

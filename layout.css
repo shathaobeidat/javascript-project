@@ -200,3 +200,81 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .profile { padding: 0 5px; }
   .icon-btn { width: 46px; height: 46px; }
 }
+img { max-width: 100%; height: auto; }
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }   /* wrap wide tables in this */
+@supports (height: 100dvh) { .sidebar { height: 100dvh; } }               /* iOS Safari address bar */
+.menu-toggle { display: none; cursor: pointer; }                         /* hamburger: mobile only */
+.nav-toggle-input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }  /* the CSS-only switch */
+.sidebar-overlay { display: none; }
+ 
+/* ---------- Tablet / iPad: icon-only sidebar ---------- */
+@media (min-width: 721px) and (max-width: 1024px) {
+  .sidebar { width: 84px; }
+  .brand { justify-content: center; padding: 14px 0 14px; margin: 0 12px 12px; }
+  .brand-text { display: none; }
+  .logo { margin: 0; width: 52px; height: 52px; }
+  .nav { align-items: stretch; }
+  .nav-item { justify-content: center; padding: 16px 0; margin: 0 12px; border-radius: 16px; }
+  .nav-item span { display: none; }
+  .nav-item i { font-size: 22px; }
+  .topbar { padding: 14px 20px; }
+  .content h1 { padding: 28px 24px 14px; font-size: 26px; }
+  .page { padding: 0 24px 28px; }
+}
+ 
+/* ---------- Mobile: drawer sidebar ---------- */
+@media (max-width: 720px) {
+  .menu-toggle { display: grid; }
+ 
+  .sidebar {
+    position: fixed; top: 0; bottom: 0; left: 0; z-index: 60;
+    width: min(280px, 82vw); height: 100%;
+    padding-bottom: env(safe-area-inset-bottom);
+    transform: translateX(-100%);
+    visibility: hidden;                                   /* not focusable while closed */
+    transition: transform .25s ease, visibility 0s .25s;
+    box-shadow: var(--shadow);
+  }
+  .nav-toggle-input:checked ~ .sidebar { transform: none; visibility: visible; transition: transform .25s ease, visibility 0s 0s; }
+  body:has(.nav-toggle-input:checked) { overflow: hidden; }     /* lock page scroll while the drawer is open */
+  .nav-toggle-input:focus-visible ~ .content .menu-toggle { outline: 2px solid var(--focus); outline-offset: 2px; }
+ 
+  .sidebar-overlay {
+    display: block; position: fixed; inset: 0; z-index: 55;
+    background: rgba(5, 10, 25, .55);
+    opacity: 0; pointer-events: none; transition: opacity .25s ease;
+  }
+  .nav-toggle-input:checked ~ .sidebar-overlay { opacity: 1; pointer-events: auto; }
+ 
+  .nav-item { font-size: 18px; padding: 15px 16px 15px 20px; }
+  .brand-name { font-size: 20px; }
+ 
+  .topbar { gap: 8px; padding: 10px 12px; }
+  .icon-btn { width: 44px; height: 44px; }
+  .profile { height: 44px; padding: 0 5px; }
+  .avatar { width: 36px; height: 36px; font-size: 14px; }
+  .user-name, .chevron { display: none; }
+  .menu { min-width: 190px; }
+ 
+  .content h1 { padding: 20px 16px 10px; font-size: 22px; }
+  .page { padding: 0 16px 24px; }
+  .toast { left: 16px; right: 16px; transform: none; text-align: center; }
+}
+ 
+/* ---------- Small phones: search moves to its own row ---------- */
+@media (max-width: 560px) {
+  .topbar { flex-wrap: wrap; }
+  .topbar .search-wrap, .topbar > .search { order: 10; flex: 1 0 100%; }
+  .search { height: 46px; }
+  .menu-toggle { margin-right: auto; }     /* push the icons to the right */
+}
+ 
+/* ---------- Large screens: keep content readable ---------- */
+@media (min-width: 1600px) {
+  .page { max-width: 1400px; }
+}
+ 
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+ 
