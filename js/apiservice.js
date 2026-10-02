@@ -99,7 +99,7 @@ export const updateStudent = (id, studentData) => send('PATCH', `/students/${id}
 export const deleteStudent = (id) => send('DELETE', `/students/${id}`);
 
 
-export const getTasks = () => request('/tasks');
+export const getTasks = () => request('/tasks'); //omar
 
 export const getTasksByCourse = (courseId) => request(`/tasks${toQuery({ courseId })}`);
 
