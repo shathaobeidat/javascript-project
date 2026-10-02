@@ -1,0 +1,69 @@
+/* Gradify — layout.css: the app shell (sidebar + header) shared by every inner page.
+   Markup is injected by js/layout.js into #app-sidebar and #app-header. */
+
+.app-shell { display: grid; grid-template-columns: var(--sidebar-w) minmax(0, 1fr); min-height: 100vh; }
+.app-body { min-width: 0; display: flex; flex-direction: column; }
+.app-main { flex: 1; }
+
+/* ===== Sidebar ===== */
+#app-sidebar { position: sticky; top: 0; height: 100vh; z-index: 40; }
+.sidebar { height: 100%; display: flex; flex-direction: column; background: var(--sidebar-bg); color: var(--sidebar-text); overflow-y: auto; }
+.brand { display: flex; align-items: center; gap: 14px; padding: 20px 20px 18px; margin: 0 16px 12px 0; border-bottom: 1px solid rgba(201, 162, 39, .35); color: inherit; text-decoration: none; }
+.brand:hover { text-decoration: none; }
+.brand-logo { width: 46px; height: 46px; flex: none; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 2px var(--gold); }
+.brand-logo img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.4); display: block; }
+.brand-name { font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; color: #fff; }
+.brand-tag { display: block; white-space: nowrap; font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); font-weight: 600; }
+
+.nav { display: flex; flex-direction: column; gap: 4px; padding-left: 12px; }
+.nav-item { display: flex; align-items: center; gap: 14px; padding: 13px 16px; color: var(--sidebar-text); text-decoration: none; font-size: 1rem; border-radius: var(--radius) 0 0 var(--radius); transition: background var(--transition), color var(--transition); }
+.nav-item:hover { background: var(--sidebar-hover); color: #fff; text-decoration: none; }
+.nav-item.active { background: var(--active-bg); color: var(--active-text); font-weight: 600; }
+.nav-item:focus-visible { outline-color: var(--gold); outline-offset: -2px; }
+.sidebar-foot { margin-top: auto; padding: 16px 20px 20px; font-size: .75rem; color: var(--sidebar-text); opacity: .7; }
+
+/* ===== Header ===== */
+.topbar { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 14px; height: var(--header-h); padding: 0 var(--space-6); background: var(--surface); border-bottom: 1px solid var(--border); }
+.search { flex: 1; max-width: 560px; display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); color: var(--muted); transition: border-color var(--transition), box-shadow var(--transition); }
+.search:focus-within { border-color: var(--focus); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 24%, transparent); }
+.search input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; box-shadow: none; padding: 0; color: var(--text); }
+.search input:focus { box-shadow: none; }
+.search kbd { font: 600 .72rem/1 var(--font); padding: 3px 7px; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); background: var(--surface); }
+.search:focus-within kbd { display: none; }
+.topbar-spacer { flex: 1; }
+
+.icon-btn { position: relative; width: 44px; height: 44px; flex: none; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 50%; color: var(--text); transition: background var(--transition); }
+.icon-btn:hover { background: var(--surface-hover); }
+.menu-toggle { display: none; }
+.icon-sun { display: none; }
+[data-theme="dark"] .icon-sun { display: block; }
+[data-theme="dark"] .icon-moon { display: none; }
+
+.profile-wrap { position: relative; flex: none; }
+.profile { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px 0 4px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); transition: background var(--transition); }
+.profile:hover { background: var(--surface-hover); }
+.avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--navy); color: var(--gold); font-weight: 700; font-size: .8rem; box-shadow: 0 0 0 2px var(--gold); flex: none; }
+.profile-name { font-size: .9rem; font-weight: 600; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chevron { width: 16px; height: 16px; transition: transform var(--transition); }
+.profile[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+
+.menu { position: absolute; right: 0; top: calc(100% + 10px); z-index: 50; min-width: 190px; padding: 8px; display: flex; flex-direction: column; gap: 2px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow); }
+.menu button { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px; border: 0; border-radius: var(--radius-sm); background: none; text-align: left; font-size: .92rem; }
+.menu button:hover { background: var(--surface-hover); }
+.menu button.danger { color: var(--danger); }
+
+/* ===== Toast + backdrop ===== */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100; background: var(--navy); color: #fff; padding: 12px 20px; border-radius: 12px; border: 1px solid var(--gold); box-shadow: var(--shadow); }
+.sidebar-backdrop { display: none; }
+
+/* ===== Responsive: sidebar becomes a slide-over drawer ===== */
+@media (max-width: 900px) {
+  .app-shell { grid-template-columns: minmax(0, 1fr); }
+  #app-sidebar { position: fixed; inset: 0 auto 0 0; width: min(var(--sidebar-w), 82vw); transform: translateX(-100%); transition: transform .25s ease; }
+  .sidebar-open #app-sidebar { transform: none; box-shadow: var(--shadow); }
+  .sidebar-open .sidebar-backdrop { display: block; position: fixed; inset: 0; z-index: 35; background: rgba(0, 0, 0, .5); }
+  .menu-toggle { display: grid; }
+  .topbar { padding: 0 var(--space-4); }
+  .profile-name, .chevron { display: none; }
+  .profile { padding: 0 4px; }
+}
