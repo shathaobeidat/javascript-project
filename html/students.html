@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Students | Gradify</title>
+  <link rel="icon" href="../assets/logo.jpeg">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('gradify:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){}</script>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/students.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside id="app-sidebar"></aside>
+    <div class="app-body">
+      <div id="app-header"></div>
+
+      <main class="app-main page" id="page-content">
+        <div class="page-head">
+         
+            <h1 class="page-title">Students</h1>
+ 
+          <button type="button" class="btn btn--primary" id="stu-add-btn">+ Add student</button>
+        </div>
+
+        <p class="alert alert--error" id="stu-alert" role="alert" hidden></p>
+
+        <section class="card card--flush">
+          <div class="toolbar">
+            <label class="field" for="stu-filter-course">Course
+              <select id="stu-filter-course"><option value="">All courses</option></select>
+            </label>
+            <label class="field" for="stu-filter-status">Status
+              <select id="stu-filter-status">
+                <option value="">All statuses</option>
+                <option>Active</option><option>At risk</option><option>Archived</option>
+              </select>
+            </label>
+            <label class="field" for="stu-filter-date">Date
+              <input type="date" id="stu-filter-date">
+            </label>
+            <button type="button" class="btn" id="stu-clear-date" hidden>Clear date</button>
+            <label class="field" for="stu-filter-attendance">Attendance
+              <select id="stu-filter-attendance">
+              
+                <option>Present</option>
+                <option>Absent</option>
+              </select>
+            </label>
+    
+          </div>
+
+          <p class="stu-summary" id="stu-summary" role="status" hidden></p>
+
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr><th>Student</th><th>Course</th><th>Grade</th><th>Attendance</th><th>Status</th><th class="right">Actions</th></tr>
+              </thead>
+              <tbody id="stu-tbody"></tbody>
+            </table>
+          </div>
+          <p class="empty" id="stu-empty" hidden>No students found.</p>
+        </section>
+      </main>
+    </div>
+  </div>
+
+ 
+  <dialog id="stu-dialog" class="stu-dialog">
+    <form id="stu-form" class="stu-form" novalidate>
+      <div class="stu-dialog-head">
+        <h2 id="stu-dialog-title">Add student</h2>
+        <button type="button" class="link-btn" id="stu-close" aria-label="Close">✕</button>
+      </div>
+      <input type="hidden" id="stu-id">
+      <label class="field" for="stu-name">Full name <span class="req">*</span>
+        <input id="stu-name" required placeholder="e.g. Lina Haddad">
+      </label>
+      <label class="field" for="stu-email">Email <span class="req">*</span>
+        <input id="stu-email" type="email" required placeholder="lina@student.university.edu">
+      </label>
+      <label class="field" for="stu-course">Course <span class="req">*</span>
+        <select id="stu-course" required></select>
+      </label>
+      <div class="form-row">
+        <label class="field" for="stu-grade">Grade (%) <span class="req">*</span>
+          <input id="stu-grade" type="number" min="0" max="100" required>
+        </label>
+        <label class="field" for="stu-status">Status
+          <select id="stu-status"><option>Active</option><option>At risk</option><option>Archived</option></select>
+        </label>
+      </div>
+      <fieldset class="stu-fieldset">
+        <legend>Attendance</legend>
+        <div class="form-row">
+          <label class="field" for="stu-attendance">Attendance <span class="req">*</span>
+            <select id="stu-attendance" required>
+              <option value="Present">Present</option>
+              <option value="Absent">Absent</option>
+            </select>
+          </label>
+          <label class="field" for="stu-date">Date <span class="req">*</span>
+            <input id="stu-date" type="date" required>
+          </label>
+        </div>
+      </fieldset>
+      <p class="alert alert--error" id="stu-form-error" role="alert" hidden></p>
+      <div class="stu-actions">
+        <button type="button" class="btn" id="stu-cancel">Cancel</button>
+        <button type="submit" class="btn btn--primary">Save student</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="../js/layout.js"></script>
+  <script type="module" src="../js/students.js"></script>
+</body>
+</html>

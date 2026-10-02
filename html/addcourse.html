@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Add a new course | Solvably</title>
+  <link rel="stylesheet" href="../css/theme.css">      
+  <link rel="stylesheet" href="../css/layout.css">    
+  <link rel="stylesheet" href="../css/addcourse.css"> 
+</head>
+<body>
+  <div class="app-shell">
+    <aside id="app-sidebar"></aside>
+    <div class="app-body">
+      <div id="app-header"></div>
+
+      <main id="crs-content" class="crs-page">
+      
+          <h1 class="crs-title">Add a new course</h1>
+          
+        <div class="crs-grid">
+       
+          <section class="crs-card">
+            <h2 class="crs-card-title">Course details</h2>
+            <form id="crs-form" class="crs-form" >
+              <label class="crs-field">Course code *
+                <input id="crs-code" required maxlength="10" placeholder="e.g. CS610" >
+       
+              </label>
+              <label class="crs-field">Course name *
+                <input id="crs-name" required maxlength="60" placeholder="Data-structure">
+              </label>
+
+              <p class="crs-msg crs-msg--error" id="crs-error" role="alert" hidden></p>
+              <p class="crs-msg crs-msg--success" id="crs-success" role="status" hidden></p>
+
+              <div class="crs-actions">
+                <button type="reset" class="crs-btn" id="crs-reset">Clear</button>
+                <button type="submit" class="crs-btn crs-btn--primary" id="crs-submit">Add course</button>
+              </div>
+            </form>
+          </section>
+
+          
+          <section class="crs-card">
+            <h2 class="crs-card-title">Existing courses <span class="crs-count" id="crs-count">0</span></h2>
+            <ul class="crs-list" id="crs-list"></ul>
+            <p class="crs-empty" id="crs-empty" hidden>No courses yet.</p>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="../js/layout.js"></script>   
+  <script type="module" src="addcourse.js"></script>
+</body>
+</html>
