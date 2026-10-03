@@ -25,92 +25,77 @@
   "courses": [
     {
       "code": "CS10",
-      "name": "database",
+      "name": "Data-Structure",
       "instructorId": "UXC1vzwuk3A",
-      "id": "KAYklmMSBwY"
+      "id": "WmUDZT1WHnQ"
     },
     {
       "code": "CS11",
-      "name": "Data-structure",
+      "name": "Database",
       "instructorId": "UXC1vzwuk3A",
-      "id": "Zhahn2jOn90"
+      "id": "rImsdBc6Iag"
+    },
+    {
+      "code": "CS12",
+      "name": "Algorithms",
+      "instructorId": "UXC1vzwuk3A",
+      "id": "lZDUFbFCei0"
     }
   ],
   "students": [
     {
       "status": "Active",
-      "name": "shatha obeidat",
-      "email": "shatha@student.bau.edu",
-      "courseId": "KAYklmMSBwY",
-      "grade": 92,
+      "name": "Tamara",
+      "email": "32201003040@std.bau.edu.jo",
+      "courseId": "WmUDZT1WHnQ",
+      "grade": 100,
       "attendanceRate": 100,
       "instructorId": "UXC1vzwuk3A",
-      "id": "FXPCopz5zW4"
-    },
-    {
-      "status": "At risk",
-      "name": "tala",
-      "email": "tala2@student.bau.edu",
-      "courseId": "KAYklmMSBwY",
-      "grade": 60,
-      "attendanceRate": 0,
-      "instructorId": "UXC1vzwuk3A",
-      "id": "qvTN2Fanl7A"
+      "id": "rEFz8ljLD5g"
     },
     {
       "status": "Active",
-      "name": "tamara",
-      "email": "tamara@student.bau.edu",
-      "courseId": "Zhahn2jOn90",
-      "grade": 86,
+      "name": "Tamara",
+      "email": "32201003040@std.bau.edu.jo",
+      "courseId": "rImsdBc6Iag",
+      "grade": 100,
       "attendanceRate": 100,
       "instructorId": "UXC1vzwuk3A",
-      "id": "zR3FduZVI_Q"
-    }
-  ],
-  "tasks": [
-    {
-      "progress": 0,
-      "pendingGrading": 0,
-      "title": "Binary tree assignment",
-      "description": "solve the question",
-      "dueDate": "2026-10-06",
-      "courseId": "Zhahn2jOn90",
-      "instructorId": "UXC1vzwuk3A",
-      "id": "KlDTWfhocAE"
+      "id": "Go6H6qDDx9U"
     },
     {
-      "progress": 0,
-      "pendingGrading": 0,
-      "title": "anything",
-      "description": "aa",
-      "dueDate": "2026-10-08",
-      "courseId": "KAYklmMSBwY",
+      "status": "Active",
+      "name": "Tala",
+      "email": "32201003041@std.bau.edu.jo",
+      "courseId": "lZDUFbFCei0",
+      "grade": 70,
+      "attendanceRate": 100,
       "instructorId": "UXC1vzwuk3A",
-      "id": "me9wxkFcgHc"
+      "id": "ygM7auvgyp8"
     }
   ],
+  "tasks": [],
   "attendance": [
     {
-      "studentId": "FXPCopz5zW4",
+      "studentId": "rEFz8ljLD5g",
       "date": "2026-10-03",
       "status": "Present",
       "instructorId": "UXC1vzwuk3A",
-      "id": "0NEwJyD5eqQ"
+      "id": "P4KRjAjragA"
     },
     {
-      "studentId": "qvTN2Fanl7A",
-      "date": "2026-10-03",
-      "status": "Absent",
-      "instructorId": "UXC1vzwuk3A",
-      "id": "bSTuP4fT06M"
-    },
-    {
-      "studentId": "zR3FduZVI_Q",
+      "studentId": "Go6H6qDDx9U",
       "date": "2026-10-03",
       "status": "Present",
       "instructorId": "UXC1vzwuk3A",
-      "id": "ftMb6UqZtHQ"
+      "id": "IKRknpb2k_M"
+    },
+    {
+      "studentId": "ygM7auvgyp8",
+      "date": "2026-10-03",
+      "status": "Present",
+      "instructorId": "UXC1vzwuk3A",
+      "id": "V4yac5R3FC4"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

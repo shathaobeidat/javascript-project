@@ -392,36 +392,71 @@ export async function getStudents(filters = {}) {
 /* =========================
    CHECK UNIQUE STUDENT EMAIL
 ========================= */
+const STUDENT_EMAIL_DOMAIN = 'std.bau.edu.jo';
+const STUDENT_ID_LENGTH = 11;
+const STUDENT_ID_PATTERN = new RegExp(`^\\d{${STUDENT_ID_LENGTH}}$`);
 
-async function validateStudentEmail(email, studentId = null) {
-  const normalizedEmail = String(email).trim().toLowerCase();
+/** @throws if the e-mail is not "<student id>@std.bau.edu.jo" */
+function assertValidStudentEmail(email) {
+  const at = email.indexOf('@');
+  const id = at > 0 ? email.slice(0, at) : '';
+  const domain = at > 0 ? email.slice(at + 1) : '';
 
-  if (!normalizedEmail) {
+  const valid =
+    at > 0 &&
+    at === email.lastIndexOf('@') &&
+    STUDENT_ID_PATTERN.test(id) &&
+    domain === STUDENT_EMAIL_DOMAIN;
+
+ if (!valid) {
+    throw new Error(
+      `Student email must be an ${STUDENT_ID_LENGTH}-digit student ID followed by @${STUDENT_EMAIL_DOMAIN}, ` +
+      `for example 32301003040@${STUDENT_EMAIL_DOMAIN}.`
+    );
+  }
+}
+
+async function validateStudentEmail(email, courseId, studentId = null) {
+  const typed = String(email ?? '').trim();
+
+  if (!typed) {
     throw new Error('Student email is required.');
   }
 
   // Only this instructor's students are compared.
   const students = await getStudents();
 
+  // Editing: an older e-mail that is left unchanged is not re-checked,
+  // so students saved before this rule can still be edited.
+  const current =
+    studentId === null ? null : students.find((s) => same(s.id, studentId));
+
+  const unchanged =
+    current && String(current.email || '').trim() === typed;
+
+  if (!unchanged) {
+    assertValidStudentEmail(typed);
+  }
+
   const emailExists = students.some((student) => {
-    const sameEmail =
-      String(student.email || '').trim().toLowerCase() === normalizedEmail;
+    const sameEmail = String(student.email || '').trim() === typed;
+
+    // The same ID is allowed in another course, not twice in the same one.
+    const sameCourse = same(student.courseId, courseId);
 
     // When editing, a student's own email is not a duplicate.
     const differentStudent =
       studentId === null || !same(student.id, studentId);
 
-    return sameEmail && differentStudent;
+    return sameEmail && sameCourse && differentStudent;
   });
 
   if (emailExists) {
-    throw new Error('This email is already used by another student.');
+    throw new Error('This student is already registered in this course.');
   }
 
-  return normalizedEmail;
+  return typed;
 }
-
-
 /* =========================
    ADD STUDENT
 ========================= */
@@ -430,9 +465,8 @@ export async function addStudent(studentData) {
   const me = requireInstructor();
 
   // The selected course must belong to this instructor.
-  const course = await getOwnedCourse(studentData.courseId);
-
-  const email = await validateStudentEmail(studentData.email);
+    const course = await getOwnedCourse(studentData.courseId);
+ const email = await validateStudentEmail(studentData.email, course.id);
 
   return send('POST', '/students', {
     status: STATUS.ACTIVE,
@@ -451,21 +485,29 @@ export async function addStudent(studentData) {
 /* =========================
    UPDATE STUDENT
 ========================= */
-
 export async function updateStudent(id, studentData) {
   // Rejects when the student is not yours.
   const student = await getOwnedStudent(id);
 
   const data = withoutOwnerFields(studentData); // instructorId can't be changed
 
-  if (data.email !== undefined) {
-    data.email = await validateStudentEmail(data.email, student.id);
-  }
-
   // Moving a student is only allowed into one of your own courses.
   if (data.courseId !== undefined) {
     const course = await getOwnedCourse(data.courseId);
     data.courseId = course.id;
+  }
+
+  // Re-check the e-mail when the e-mail OR the course changes: the same
+  // student ID may not end up twice in the same course.
+  if (data.email !== undefined || data.courseId !== undefined) {
+    const targetCourseId =
+      data.courseId !== undefined ? data.courseId : student.courseId;
+
+    data.email = await validateStudentEmail(
+      data.email !== undefined ? data.email : student.email,
+      targetCourseId,
+      student.id
+    );
   }
 
   return send(
