@@ -23,7 +23,9 @@ import {
 requireInstructor();
 
 
-
+/* =========================
+   HELPERS
+========================= */
 
 const $ = (id) =>
   document.getElementById(id);
@@ -96,9 +98,7 @@ const filters = {
 
   date: '',
 
-  attendance: '',
-
-  query: ''
+  attendance: ''
 
 };
 
@@ -134,21 +134,6 @@ async function init() {
 
 
     fillCourseSelects();
-
-
-    const q =
-      new URLSearchParams(
-        location.search
-      ).get('q');
-
-
-    if (q) {
-
-      filters.query = q;
-
-      $('search').value = q;
-
-    }
 
 
     render();
@@ -361,12 +346,6 @@ function fillCourseSelects() {
 
 function baseStudents() {
 
-  const q =
-    filters.query
-      .trim()
-      .toLowerCase();
-
-
   return students.filter(
     (student) =>
 
@@ -390,23 +369,6 @@ function baseStudents() {
           filters.status
       )
 
-
-      &&
-
-
-      (
-        !q ||
-
-        student.name
-          .toLowerCase()
-          .includes(q)
-
-        ||
-
-        student.email
-          .toLowerCase()
-          .includes(q)
-      )
 
   );
 
@@ -1400,43 +1362,6 @@ $('stu-clear-date')
 
     }
   );
-
-
-/*
- * Search
- */
-$('search')
-  .addEventListener(
-    'input',
-    (event) => {
-
-      filters.query =
-        event.target.value;
-
-      render();
-
-    }
-  );
-
-
-/*
- * Global search event
- */
-window.addEventListener(
-  'gradify:search',
-  (event) => {
-
-    filters.query =
-      event.detail?.query ??
-      '';
-
-    $('search').value =
-      filters.query;
-
-    render();
-
-  }
-);
 
 
 /* =========================

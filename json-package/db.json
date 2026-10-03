@@ -1,8 +1,117 @@
 {
-  "users": [],
-  "courses": [],
-  "students": [],
-  "tasks": [],
-  "attendance": [],
+  "users": [
+    {
+      "role": "instructor",
+      "name": "Shatha obeidat",
+      "email": "shatha@bau.edu.jo",
+      "password": "Ss@12345",
+      "id": "UXC1vzwuk3A"
+    },
+    {
+      "role": "instructor",
+      "name": "Rania Haddad",
+      "email": "rania@bau.edu.jo",
+      "password": "Rr@12345",
+      "id": "gzKc-oxrHFY"
+    },
+    {
+      "role": "instructor",
+      "name": "diana salah",
+      "email": "diana@bau.edu.jo",
+      "password": "Dd@12345",
+      "id": "0Lp7aGt3VWI"
+    }
+  ],
+  "courses": [
+    {
+      "code": "CS10",
+      "name": "database",
+      "instructorId": "UXC1vzwuk3A",
+      "id": "KAYklmMSBwY"
+    },
+    {
+      "code": "CS11",
+      "name": "Data-structure",
+      "instructorId": "UXC1vzwuk3A",
+      "id": "Zhahn2jOn90"
+    }
+  ],
+  "students": [
+    {
+      "status": "Active",
+      "name": "shatha obeidat",
+      "email": "shatha@student.bau.edu",
+      "courseId": "KAYklmMSBwY",
+      "grade": 92,
+      "attendanceRate": 100,
+      "instructorId": "UXC1vzwuk3A",
+      "id": "FXPCopz5zW4"
+    },
+    {
+      "status": "At risk",
+      "name": "tala",
+      "email": "tala2@student.bau.edu",
+      "courseId": "KAYklmMSBwY",
+      "grade": 60,
+      "attendanceRate": 0,
+      "instructorId": "UXC1vzwuk3A",
+      "id": "qvTN2Fanl7A"
+    },
+    {
+      "status": "Active",
+      "name": "tamara",
+      "email": "tamara@student.bau.edu",
+      "courseId": "Zhahn2jOn90",
+      "grade": 86,
+      "attendanceRate": 100,
+      "instructorId": "UXC1vzwuk3A",
+      "id": "zR3FduZVI_Q"
+    }
+  ],
+  "tasks": [
+    {
+      "progress": 0,
+      "pendingGrading": 0,
+      "title": "Binary tree assignment",
+      "description": "solve the question",
+      "dueDate": "2026-10-06",
+      "courseId": "Zhahn2jOn90",
+      "instructorId": "UXC1vzwuk3A",
+      "id": "KlDTWfhocAE"
+    },
+    {
+      "progress": 0,
+      "pendingGrading": 0,
+      "title": "anything",
+      "description": "aa",
+      "dueDate": "2026-10-08",
+      "courseId": "KAYklmMSBwY",
+      "instructorId": "UXC1vzwuk3A",
+      "id": "me9wxkFcgHc"
+    }
+  ],
+  "attendance": [
+    {
+      "studentId": "FXPCopz5zW4",
+      "date": "2026-10-03",
+      "status": "Present",
+      "instructorId": "UXC1vzwuk3A",
+      "id": "0NEwJyD5eqQ"
+    },
+    {
+      "studentId": "qvTN2Fanl7A",
+      "date": "2026-10-03",
+      "status": "Absent",
+      "instructorId": "UXC1vzwuk3A",
+      "id": "bSTuP4fT06M"
+    },
+    {
+      "studentId": "zR3FduZVI_Q",
+      "date": "2026-10-03",
+      "status": "Present",
+      "instructorId": "UXC1vzwuk3A",
+      "id": "ftMb6UqZtHQ"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }
