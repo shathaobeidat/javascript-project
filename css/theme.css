@@ -1,9 +1,4 @@
-/* =====================================================================
-   Gradify — theme.css
-   The ONE shared theme: design tokens + base + reusable components.
-   Link it FIRST on every page, then use var(--…) in page CSS.
-   Never type a raw colour in page CSS — use a token so light/dark work.
-   ===================================================================== */
+
 
 :root {
   color-scheme: light;

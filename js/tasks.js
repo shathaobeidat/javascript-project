@@ -1,7 +1,5 @@
 import{getCourses, addTask, deleteTask, getTasks, requireInstructor} from '../js/apiservice.js';
 
-// Redirects to login.html when nobody is logged in.
-// getCourses/getTasks/addTask/deleteTask only work on the current instructor's data.
 requireInstructor();
 const title = document.getElementById("title");
 const description = document.getElementById("description");

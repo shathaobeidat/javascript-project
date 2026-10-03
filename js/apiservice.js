@@ -1,22 +1,4 @@
-// apiservice.js — all communication with JSON Server.
-//
-// DATA OWNERSHIP MODEL
-//   user.id  ->  course.instructorId  ->  student.instructorId  ->  attendance (via studentId)
-//                course.id            ->  task.courseId (task owner = owner of its course)
-//
-// Records that have no instructorId (the data that existed before isolation was
-// added) are NEVER assigned to anybody: they do not match any instructor, so
-// they are invisible and cannot be changed through this service. Every instructor
-// therefore starts with zero data and owns only what they create.
-//
-// Every function below takes the instructor from the existing session
-// (getSessionUser from layout.js). Callers can NOT choose the instructor:
-// any instructorId passed in by a page is ignored/overwritten.
-//
-// NOTE: JSON Server has no authentication. These checks run in the browser, so
-// they stop the app (and normal use of it) from touching another instructor's
-// data, but they cannot stop someone who calls the API directly (curl, DevTools).
-// See the notes delivered with this project.
+
 
 import { getSessionUser } from './layout.js';
 
@@ -78,11 +60,7 @@ function toQuery(params = {}) {
   return str ? `?${str}` : '';
 }
 
-/*
- * courseId is intentionally NOT numeric any more: courses created through the
- * app get string ids such as "HZZn8Lp3HxI", and Number() of those is NaN.
- * All ids are compared as strings with same().
- */
+
 const NUMERIC_FIELDS = ['grade', 'attendanceRate', 'progress', 'pendingGrading'];
 
 function normalize(data) {
@@ -101,16 +79,7 @@ function normalize(data) {
   return out;
 }
 
-/*
- * Server-side filter by owner.
- *
- * json-server 1.0.0-beta turns query values like "1" into the NUMBER 1, so a
- * plain ?instructorId=1 would never match an instructorId stored as the string
- * "1". Its JSON filter (_where) with the "eq" operator compares exactly, so ids
- * stay strings:
- *   /students?_where={"instructorId":{"eq":"1"}}
- * (Every getter below also re-checks ownership on the returned rows.)
- */
+
 const ownerQuery = (instructorId) =>
   toQuery({
     _where: JSON.stringify({ instructorId: { eq: String(instructorId) } }),
@@ -140,10 +109,7 @@ const withoutOwnerFields = ({ id, instructorId, ...rest }) => rest;
    SESSION / AUTHORISATION
 ========================= */
 
-/**
- * Returns the logged-in instructor's id (as a string), using the existing
- * session. If nobody is logged in, send the visitor to the existing login page.
- */
+
 export function requireInstructor() {
   const user = getSessionUser();
 
@@ -231,6 +197,7 @@ async function getOwnedAttendanceRecord(recordId) {
  *     are two different e-mails (two different accounts).
  *   - Login compares the whole e-mail exactly as it was registered.
  */
+
 const EMAIL_DOMAIN = 'bau.edu.jo';
 
 const cleanEmail = (email) => String(email ?? '').trim();

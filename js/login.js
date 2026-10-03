@@ -1,4 +1,4 @@
-// login.js — verify credentials, remember the user, go to the dashboard.
+
 import { loginUser } from './apiservice.js';
 import { setSessionUser } from './layout.js';
 

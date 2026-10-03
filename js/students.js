@@ -1,4 +1,4 @@
-// students.js — Students page
+
 
 import {
   getStudents,

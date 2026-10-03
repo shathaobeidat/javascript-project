@@ -1,6 +1,4 @@
-// =========================================================
-// Gradify - Add Course page
-// =========================================================
+
 
 import {
   getCourses,
@@ -10,10 +8,7 @@ import {
 } from './apiservice.js';
 
 
-/*
- * Instructor-specific page: redirects to login.html when nobody is logged in.
- * getCourses/addCourse/deleteCourse only work on the current instructor's courses.
- */
+
 requireInstructor();
 
 
