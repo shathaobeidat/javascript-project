@@ -1,5 +1,4 @@
-/* Gradify — layout.css: the app shell (sidebar + header) shared by every inner page.
-   Markup is injected by js/layout.js into #app-sidebar and #app-header. */
+
 
 .app-shell { display: grid; grid-template-columns: var(--sidebar-w) minmax(0, 1fr); min-height: 100vh; }
 .app-body { min-width: 0; display: flex; flex-direction: column; }

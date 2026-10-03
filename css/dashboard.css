@@ -1,8 +1,6 @@
 
 
-/* =========================================================
-   1. Reset + Base
-   ========================================================= */
+
 
 *,
 *::before,
@@ -140,18 +138,18 @@ input {
 
 .course-filter select {
     width: 100%;
-
     border: 0;
     outline: 0;
-
     background: transparent;
-
     cursor: pointer;
-
     font-size: 14px;
     font-weight: 600;
 }
 
+.course-filter select option {
+    background: var(--surface);
+    color: var(--text);
+}
 
 /* =========================================================
    5. Section Headers

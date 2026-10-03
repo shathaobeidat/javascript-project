@@ -1,4 +1,4 @@
-// signup.js — validate the form, register the user, go to the sign-in page.
+
 import { registerUser } from './apiservice.js';
 
 const userName = document.getElementById('name');

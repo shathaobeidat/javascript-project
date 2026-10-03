@@ -1,10 +1,6 @@
 import { getDashboardData, requireInstructor, STATUS } from './apiservice.js';
 
-/*
- * Redirects to login.html when nobody is signed in.
- * getDashboardData() always uses the instructor from the session,
- * so nothing has to be passed to it.
- */
+
 const signedIn = (() => {
     try {
         requireInstructor();

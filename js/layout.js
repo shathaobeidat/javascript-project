@@ -1,7 +1,4 @@
-/* Gradify — layout.js
-   Injects the shared Sidebar + Header into every inner page.
-   Pages only need:  <aside id="app-sidebar"></aside>  and  <div id="app-header"></div>
-   and  <script type="module" src="../js/layout.js"></script>                          */
+                        
 
 const LOGO = new URL('../assets/logo.jpeg', import.meta.url).href;
 const SESSION_KEY = 'gradify:user';
