@@ -27,6 +27,13 @@
       "email": "yousef@bau.edu.jo",
       "password": "Yousef1234",
       "id": "-MEGRwBsv_Y"
+    },
+    {
+      "role": "instructor",
+      "name": "Dr.yousef",
+      "email": "Yousefjarrar@bau.edu.jo",
+      "password": "Yousef1234",
+      "id": "GLCx-y4ZPhQ"
     }
   ],
   "courses": [
@@ -41,6 +48,12 @@
       "name": "Data-structure",
       "instructorId": "UXC1vzwuk3A",
       "id": "Zhahn2jOn90"
+    },
+    {
+      "code": "CS1111",
+      "name": "cys",
+      "instructorId": "GLCx-y4ZPhQ",
+      "id": "8vuI37eRyYI"
     }
   ],
   "students": [
