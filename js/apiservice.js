@@ -81,10 +81,7 @@ function normalize(data) {
 
 
 const ownerQuery = (instructorId) =>
-  toQuery({
-    _where: JSON.stringify({ instructorId: { eq: String(instructorId) } }),
-  });
-
+  toQuery({ instructorId: String(instructorId) });
 const withoutPassword = ({ password, ...user }) => user;
 
 const average = (list, key) =>

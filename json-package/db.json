@@ -34,6 +34,12 @@
       "name": "Data-structure",
       "instructorId": "UXC1vzwuk3A",
       "id": "Zhahn2jOn90"
+    },
+    {
+      "code": "CS610",
+      "name": "Data Structure",
+      "instructorId": "ngTVhafQh6k",
+      "id": "-MoX8BA1W80"
     }
   ],
   "students": [
@@ -66,6 +72,36 @@
       "attendanceRate": 100,
       "instructorId": "UXC1vzwuk3A",
       "id": "zR3FduZVI_Q"
+    },
+    {
+      "status": "Active",
+      "name": "Ahmad",
+      "email": "ahmad@edu.abu",
+      "courseId": "-MoX8BA1W80",
+      "grade": 37,
+      "attendanceRate": 100,
+      "instructorId": "ngTVhafQh6k",
+      "id": "4cRAP5vs6Uc"
+    },
+    {
+      "status": "At risk",
+      "name": "tala",
+      "email": "talaa@gmail",
+      "courseId": "-MoX8BA1W80",
+      "grade": 20,
+      "attendanceRate": 100,
+      "instructorId": "ngTVhafQh6k",
+      "id": "8Ws73re2xtM"
+    },
+    {
+      "status": "At risk",
+      "name": "Rama",
+      "email": "rama@abu.edu",
+      "courseId": "-MoX8BA1W80",
+      "grade": 60,
+      "attendanceRate": 100,
+      "instructorId": "ngTVhafQh6k",
+      "id": "m1XLTMGQw68"
     }
   ],
   "tasks": [
@@ -111,6 +147,27 @@
       "status": "Present",
       "instructorId": "UXC1vzwuk3A",
       "id": "ftMb6UqZtHQ"
+    },
+    {
+      "studentId": "4cRAP5vs6Uc",
+      "date": "2026-10-03",
+      "status": "Present",
+      "instructorId": "ngTVhafQh6k",
+      "id": "eANkFi9B9RU"
+    },
+    {
+      "studentId": "8Ws73re2xtM",
+      "date": "2026-10-03",
+      "status": "Present",
+      "instructorId": "ngTVhafQh6k",
+      "id": "-x2KpGu_X8U"
+    },
+    {
+      "studentId": "m1XLTMGQw68",
+      "date": "2026-10-03",
+      "status": "Present",
+      "instructorId": "ngTVhafQh6k",
+      "id": "GXRYF2_EJ40"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
