@@ -183,8 +183,9 @@ window.addEventListener('page-change', async (e) => {
 
 ## Team
 
-- Layout and header: _your name_
-- Dashboard: _name_
-- Students: _name_
-- Analytics and Reports: _name_
-- Alerts: _name_
+- Layout and header: _Tala_
+- Dashboard: _abdullah_
+- Students: _shatha_
+- add-course: _shatha_
+- assignments: _omar_
+- auth(login,signup) :yousef
