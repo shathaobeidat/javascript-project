@@ -20,6 +20,13 @@
       "email": "diana@bau.edu.jo",
       "password": "Dd@12345",
       "id": "0Lp7aGt3VWI"
+    },
+    {
+      "role": "instructor",
+      "name": "yousef",
+      "email": "yousef@bau.edu.jo",
+      "password": "Yousef1234",
+      "id": "-MEGRwBsv_Y"
     }
   ],
   "courses": [
