@@ -1,169 +1,317 @@
-// dashboard.js — Dashboard page. All data comes from apiservice.js (getDashboardData).
-import { getDashboardData, STATUS } from './apiservice.js';
-import { getSessionUser, showToast } from './layout.js';
+import { getDashboardData, requireInstructor, STATUS } from './apiservice.js';
 
-const $ = (id) => document.getElementById(id);
-const esc = (value) => String(value).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+/*
+ * Redirects to login.html when nobody is signed in.
+ * getDashboardData() always uses the instructor from the session,
+ * so nothing has to be passed to it.
+ */
+const signedIn = (() => {
+    try {
+        requireInstructor();
+        return true;
+    } catch {
+        return false;
+    }
+})();
 
-const courseFilter = $('course-filter');
-const studentTabs = document.querySelectorAll('.student-tab');
+// A task is pending until its submission progress reaches 100%.
+const isPending = (task) => Number(task.progress || 0) < 100;
 
-const GRADE_COLORS = ['#22c55e', '#3b82f6', '#f59e0b', '#f97316', '#ef4444']; // A B C D F
-const TAB_STATUS = { all: null, active: STATUS.ACTIVE, risk: STATUS.AT_RISK, archived: STATUS.ARCHIVED };
+// Ids can be numbers (old data) or strings (new data): compare as strings.
+const sameId = (a, b) => String(a) === String(b);
 
-let data = null;          // last response of getDashboardData()
-let chart = null;         // Chart.js instance (destroyed before every redraw)
-let activeTab = 'all';
+const courseFilter = document.getElementById("course-filter");
 
-/* ---------- heading ---------- */
-function renderHeading() {
-  const name = getSessionUser()?.name || 'Instructor';
-  $('page-welcome').textContent = `Welcome back, ${name}`;
-  $('dashboard-term').textContent = new Date().toLocaleDateString('en-US', {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-  });
+const averageAttendanceValue =
+    document.getElementById("average-attendance-value");
+
+const pendingTasksValue =
+    document.getElementById("pending-tasks-value");
+
+const totalEnrolledValue =
+    document.getElementById("total-enrolled-value");
+
+const gradeDistributionChart =
+    document.getElementById("grade-distribution-chart");
+
+const activeTasksList =
+    document.getElementById("active-tasks-list");
+
+const studentsTableBody =
+    document.getElementById("students-table-body");
+
+const studentTabs = document.querySelectorAll(".student-tab");
+
+const allStudentsCount = document.getElementById("all-students-count");
+const activeStudentsCount = document.getElementById("active-students-count");
+const riskStudentsCount = document.getElementById("risk-students-count");
+const archivedStudentsCount = document.getElementById("archived-students-count");
+
+let allStudents = [];
+let allCourses = [];
+let allTasks = [];
+let gradeChart = null;
+
+
+const escapeHtml = (text) =>
+    String(text ?? "").replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+
+
+/* =========================
+   LOAD
+========================= */
+
+async function loadDashboard() {
+
+    try {
+
+        const data = await getDashboardData();
+
+        renderCourseFilter(data.courses);
+        updateDashboard(data);
+
+    } catch (error) {
+
+        console.error("Failed to load the dashboard:", error);
+
+    }
 }
 
-/* ---------- stat cards ---------- */
-function renderStats(stats) {
-  $('average-attendance-value').textContent = `${stats.avgAttendance}%`;
-  $('pending-tasks-value').textContent = stats.pendingTasks;
-  $('total-enrolled-value').textContent = stats.totalStudents;
-}
 
-/* ---------- grade chart ---------- */
-function cssVar(name, fallback) {
-  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
-}
+/* Fills every part of the page from one getDashboardData() result. */
+function updateDashboard(data) {
 
-function renderChart(distribution) {
-  const canvas = $('grade-distribution-chart');
-  if (typeof Chart === 'undefined') {            // the Chart.js CDN script did not load (offline?)
-    canvas.insertAdjacentHTML('afterend', '<p class="section-description">The chart could not be loaded. Check your internet connection.</p>');
-    canvas.hidden = true;
-    return;
-  }
-  if (chart) chart.destroy();
-  const text = cssVar('--muted', '#6b7488');
-  const grid = cssVar('--border', '#dfe3ec');
-  chart = new Chart(canvas, {
-    type: 'bar',
-    data: {
-      labels: distribution.labels,
-      datasets: [{
-        label: 'Students',
-        data: distribution.counts,
-        backgroundColor: GRADE_COLORS,
-        borderRadius: { topLeft: 20, topRight: 20 },
-        maxBarThickness: 65,
-      }],
-    },
-    options: {
-      animations: { y: { from: 0, duration: 1200, easing: 'easeOutQuart' } },
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { ticks: { color: text }, grid: { display: false } },
-        y: { beginAtZero: true, ticks: { precision: 0, color: text }, grid: { color: grid } },
-      },
-    },
-  });
-}
+    averageAttendanceValue.textContent = `${data.stats.avgAttendance}%`;
+    // "Pending" = tasks that are not finished yet (progress below 100%).
+    pendingTasksValue.textContent = data.tasks.filter(isPending).length;
+    totalEnrolledValue.textContent = data.stats.totalStudents;
 
-/* ---------- active tasks ---------- */
-function renderTasks(tasks) {
-  const list = $('active-tasks-list');
-  if (!tasks.length) {
-    list.innerHTML = '<p class="section-description">No active tasks for this selection.</p>';
-    return;
-  }
-  list.innerHTML = tasks.map((task) => {
-    const progress = Math.max(0, Math.min(100, Number(task.progress) || 0));
-    const course = task.courseCode ? `${task.courseCode} - ${task.courseName}` : '-';
-    return `
-      <article class="task-card">
-        <div class="task-top">
-          <span class="task-course">${esc(course)}</span>
-          <span class="task-due">${esc(task.dueDate)}</span>
-        </div>
-        <h3 class="task-title">${esc(task.title)}</h3>
-        <div class="task-progress-text">
-          <span>Submission Progress</span>
-          <strong>${progress}%</strong>
-        </div>
-        <div class="progress"><div class="progress-fill" style="width: ${progress}%"></div></div>
-        <p class="task-pending">${esc(task.pendingGrading ?? 0)} awaiting for grading</p>
-      </article>`;
-  }).join('');
-}
+    allStudents = data.students;
+    allCourses = data.courses;
+    allTasks = data.tasks;
 
-/* ---------- students table + tabs ---------- */
-function renderStudents() {
-  const status = TAB_STATUS[activeTab];
-  const students = status ? data.students.filter((s) => s.status === status) : data.students;
-  const codeOf = new Map(data.courses.map((c) => [String(c.id), c.code]));     // ids are strings, courseId is a number
+    renderTasks(data.tasks);
+    renderStudents(studentsForActiveTab(), allCourses);
 
-  const body = $('students-table-body');
-  if (!students.length) {
-    body.innerHTML = '<tr><td colspan="5">No students in this view.</td></tr>';
-    return;
-  }
-  body.innerHTML = students.map((s) => {
-    const cls = s.status === STATUS.ACTIVE ? 'status-active' : s.status === STATUS.AT_RISK ? 'status-risk' : 'status-archived';
-    return `
-      <tr>
-        <td>${esc(s.name)}</td>
-        <td>${esc(codeOf.get(String(s.courseId)) ?? '-')}</td>
-        <td>${esc(s.grade)}%</td>
-        <td>${esc(s.attendanceRate)}%</td>
-        <td><span class="status ${cls}">${esc(s.status)}</span></td>
-      </tr>`;
-  }).join('');
-}
+    allStudentsCount.textContent = allStudents.length;
 
-function renderTabCounts() {
-  $('all-students-count').textContent = data.students.length;
-  $('active-students-count').textContent = data.statusCounts[STATUS.ACTIVE];
-  $('risk-students-count').textContent = data.statusCounts[STATUS.AT_RISK];
-  $('archived-students-count').textContent = data.statusCounts[STATUS.ARCHIVED];
-}
+    activeStudentsCount.textContent =
+        allStudents.filter(student => student.status === STATUS.ACTIVE).length;
 
-function fillCourseFilter(courses) {
-  const selected = courseFilter.value;
-  courseFilter.innerHTML = '<option value="">All Courses</option>' +
-    courses.map((c) => `<option value="${esc(c.id)}">${esc(c.code)} - ${esc(c.name)}</option>`).join('');
-  courseFilter.value = selected;
-}
+    riskStudentsCount.textContent =
+        allStudents.filter(student => student.status === STATUS.AT_RISK).length;
 
-/* ---------- load + events ---------- */
-async function load() {
-  try {
-    data = await getDashboardData({ courseId: courseFilter.value });   // the course filter now affects everything
-    fillCourseFilter(data.courses);
-    renderStats(data.stats);
+    archivedStudentsCount.textContent =
+        allStudents.filter(student => student.status === STATUS.ARCHIVED).length;
+
     renderChart(data.gradeDistribution);
-    renderTasks(data.activeTasks);
-    renderTabCounts();
-    renderStudents();
-  } catch (err) {
-    showToast(err.message);
-  }
 }
 
-courseFilter.addEventListener('change', load);
 
-studentTabs.forEach((tab) => {
-  tab.addEventListener('click', () => {
-    studentTabs.forEach((t) => t.classList.remove('active'));
-    tab.classList.add('active');
-    activeTab = tab.dataset.status;
-    if (data) renderStudents();
-  });
+function renderChart(gradeDistribution) {
+
+    // A canvas can only hold one chart: destroy the old one first.
+    if (gradeChart) {
+        gradeChart.destroy();
+    }
+
+    gradeChart = new Chart(gradeDistributionChart, {
+        type: "bar",
+
+        data: {
+            labels: gradeDistribution.labels,
+
+            datasets: [{
+                label: "student",
+                data: gradeDistribution.counts,
+                backgroundColor: [
+                    "#22c55e", // A
+                    "#3b82f6", // B
+                    "#f59e0b", // C
+                    "#f97316", // D
+                    "#ef4444"  // F
+                ],
+                borderRadius: {
+                    topLeft: 20,
+                    topRight: 20,
+                },
+                barThickness: 65,
+            }]
+        },
+
+        options: {
+            animations: {
+                y: {
+                    from: 0,
+                    duration: 1200,
+                    easing: "easeOutQuart"
+                }
+            },
+
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+}
+
+
+/* =========================
+   STUDENTS
+========================= */
+
+function studentsForActiveTab() {
+
+    const activeTab = document.querySelector(".student-tab.active");
+    const status = activeTab ? activeTab.dataset.status : "all";
+
+    if (status === "active") {
+        return allStudents.filter(student => student.status === STATUS.ACTIVE);
+    }
+
+    if (status === "risk") {
+        return allStudents.filter(student => student.status === STATUS.AT_RISK);
+    }
+
+    if (status === "archived") {
+        return allStudents.filter(student => student.status === STATUS.ARCHIVED);
+    }
+
+    return allStudents;
+}
+
+
+function renderStudents(students, courses) {
+
+    studentsTableBody.innerHTML = students.map(student => {
+
+        const course = courses.find(
+            course => sameId(course.id, student.courseId)
+        );
+
+        const statusClass =
+            student.status === STATUS.ACTIVE
+                ? "status-active"
+                : student.status === STATUS.AT_RISK
+                    ? "status-risk"
+                    : "status-archived";
+
+        return `
+            <tr>
+                <td>${escapeHtml(student.name)}</td>
+                <td>${course ? escapeHtml(`${course.code} - ${course.name}`) : "-"}</td>
+                <td>${student.grade}%</td>
+                <td>${student.attendanceRate}%</td>
+                <td>
+                    <span class="status ${statusClass}">
+                        ${escapeHtml(student.status)}
+                    </span>
+                </td>
+            </tr>
+        `;
+    }).join("");
+}
+
+
+/* =========================
+   TASKS
+========================= */
+
+function renderTasks(tasks) {
+
+    activeTasksList.innerHTML = tasks.map(task => {
+
+        const course = allCourses.find(
+            course => sameId(course.id, task.courseId)
+        );
+
+        return `
+            <article class="task-card">
+
+                <div class="task-top">
+                    <span class="task-course">
+                        ${course ? escapeHtml(`${course.code} - ${course.name}`) : "-"}
+                    </span>
+
+                    <span class="task-due">
+                        ${escapeHtml(task.dueDate)}
+                    </span>
+                </div>
+
+                <h3 class="task-title">
+                    ${escapeHtml(task.title)}
+                </h3>
+
+                <div class="task-progress-text">
+                    <span>Submission Progress</span>
+
+                    <strong>
+                        ${task.progress}%
+                    </strong>
+                </div>
+
+                <div class="progress">
+                    <div
+                        class="progress-fill"
+                        style="width: ${task.progress}%"
+                    ></div>
+                </div>
+
+            </article>
+        `;
+    }).join("");
+}
+
+
+/* =========================
+   COURSE FILTER
+========================= */
+
+function renderCourseFilter(courses) {
+
+    courseFilter.innerHTML =
+        `<option value="">All Courses</option>` +
+        courses.map(course => `
+            <option value="${escapeHtml(course.id)}">
+                ${escapeHtml(course.code)} - ${escapeHtml(course.name)}
+            </option>
+        `).join("");
+}
+
+
+courseFilter.addEventListener("change", async () => {
+
+    try {
+
+        const data = await getDashboardData({
+            courseId: courseFilter.value || undefined
+        });
+
+        updateDashboard(data);
+
+    } catch (error) {
+
+        console.error("Failed to change course:", error);
+
+    }
 });
 
-// redraw the chart with the right text colors after a light/dark switch
-window.addEventListener('gradify:theme', () => { if (data) renderChart(data.gradeDistribution); });
 
-renderHeading();
-load();
+studentTabs.forEach(tab => {
+
+    tab.addEventListener("click", () => {
+
+        studentTabs.forEach(item => item.classList.remove("active"));
+
+        tab.classList.add("active");
+
+        renderStudents(studentsForActiveTab(), allCourses);
+    });
+
+});
+
+
+if (signedIn) {
+    loadDashboard();
+}
