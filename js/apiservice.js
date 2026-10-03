@@ -1,42 +1,17 @@
-// apiservice.js — all communication with JSON Server.
-//
-// DATA OWNERSHIP MODEL
-//   user.id  ->  course.instructorId  ->  student.instructorId  ->  attendance (via studentId)
-//                course.id            ->  task.courseId (task owner = owner of its course)
-//
-// Records that have no instructorId (the data that existed before isolation was
-// added) are NEVER assigned to anybody: they do not match any instructor, so
-// they are invisible and cannot be changed through this service. Every instructor
-// therefore starts with zero data and owns only what they create.
-//
-// Every function below takes the instructor from the existing session
-// (getSessionUser from layout.js). Callers can NOT choose the instructor:
-// any instructorId passed in by a page is ignored/overwritten.
-//
-// NOTE: JSON Server has no authentication. These checks run in the browser, so
-// they stop the app (and normal use of it) from touching another instructor's
-// data, but they cannot stop someone who calls the API directly (curl, DevTools).
-// See the notes delivered with this project.
 
-import { getSessionUser } from './layout.js';
 
 export const BASE_URL = 'http://localhost:3000';
 
-/** Shared constants */
+/** Shared constants — use these instead of typing the strings by hand. */
 export const STATUS = Object.freeze({
   ACTIVE: 'Active',
   AT_RISK: 'At risk',
   ARCHIVED: 'Archived',
 });
 
-export const ATTENDANCE = Object.freeze({
-  PRESENT: 'Present',
-  ABSENT: 'Absent',
-});
 
 async function request(path, options = {}) {
   let response;
-
   try {
     response = await fetch(`${BASE_URL}${path}`, {
       headers: { 'Content-Type': 'application/json' },
@@ -49,11 +24,9 @@ async function request(path, options = {}) {
   }
 
   if (!response.ok) {
-    const error = new Error(
+    throw new Error(
       `${options.method || 'GET'} ${path} failed (${response.status})`
     );
-    error.status = response.status;
-    throw error;
   }
 
   return response.json();
@@ -62,14 +35,21 @@ async function request(path, options = {}) {
 const send = (method, path, body) =>
   request(path, {
     method,
-    body: body === undefined ? undefined : JSON.stringify(body),
+    body:
+      body === undefined
+        ? undefined
+        : JSON.stringify(body),
   });
 
 function toQuery(params = {}) {
   const q = new URLSearchParams();
 
   Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== '') {
+    if (
+      value !== undefined &&
+      value !== null &&
+      value !== ''
+    ) {
       q.append(key, value);
     }
   });
@@ -78,208 +58,75 @@ function toQuery(params = {}) {
   return str ? `?${str}` : '';
 }
 
-/*
- * courseId is intentionally NOT numeric any more: courses created through the
- * app get string ids such as "HZZn8Lp3HxI", and Number() of those is NaN.
- * All ids are compared as strings with same().
- */
-const NUMERIC_FIELDS = ['grade', 'attendanceRate', 'progress', 'pendingGrading'];
+const NUMERIC_FIELDS = [
+  'courseId',
+  'grade',
+  'attendanceRate',
+  'progress',
+  'pendingGrading',
+];
 
 function normalize(data) {
   const out = { ...data };
 
   NUMERIC_FIELDS.forEach((field) => {
-    if (out[field] !== undefined && out[field] !== '') {
+    if (
+      out[field] !== undefined &&
+      out[field] !== ''
+    ) {
       out[field] = Number(out[field]);
     }
   });
 
-  if (out.courseId !== undefined && out.courseId !== null) {
-    out.courseId = String(out.courseId);
-  }
-
   return out;
 }
-
-/*
- * Server-side filter by owner.
- *
- * json-server 1.0.0-beta turns query values like "1" into the NUMBER 1, so a
- * plain ?instructorId=1 would never match an instructorId stored as the string
- * "1". Its JSON filter (_where) with the "eq" operator compares exactly, so ids
- * stay strings:
- *   /students?_where={"instructorId":{"eq":"1"}}
- * (Every getter below also re-checks ownership on the returned rows.)
- */
-const ownerQuery = (instructorId) =>
-  toQuery({
-    _where: JSON.stringify({ instructorId: { eq: String(instructorId) } }),
-  });
 
 const withoutPassword = ({ password, ...user }) => user;
 
 const average = (list, key) =>
   list.length
     ? Math.round(
-        (list.reduce((sum, item) => sum + Number(item[key]), 0) /
-          list.length) *
-          10
+        (
+          list.reduce(
+            (sum, item) => sum + Number(item[key]),
+            0
+          ) / list.length
+        ) * 10
       ) / 10
     : 0;
-
-/** Compare ids safely: 1 and "1" are the same id; null/undefined match nothing. */
-const same = (a, b) =>
-  a !== undefined && a !== null && b !== undefined && b !== null &&
-  String(a) === String(b);
-
-/** Fields a caller is never allowed to set/overwrite on an existing record. */
-const withoutOwnerFields = ({ id, instructorId, ...rest }) => rest;
-
-
-/* =========================
-   SESSION / AUTHORISATION
-========================= */
-
-/**
- * Returns the logged-in instructor's id (as a string), using the existing
- * session. If nobody is logged in, send the visitor to the existing login page.
- */
-export function requireInstructor() {
-  const user = getSessionUser();
-
-  if (!user || user.id === undefined || user.id === null || user.id === '') {
-    if (typeof window !== 'undefined') {
-      window.location.replace('login.html');
-    }
-    throw new Error('You must be signed in.');
-  }
-
-  return String(user.id);
-}
-
-const denied = (what) =>
-  new Error(`Access denied: this ${what} does not belong to you.`);
-
-/** GET /<collection>/<id>; a missing record is reported the same way as a foreign one. */
-async function fetchRecord(collection, id, what) {
-  if (id === undefined || id === null || id === '') {
-    throw new Error(`A ${what} id is required.`);
-  }
-
-  try {
-    return await request(`/${collection}/${encodeURIComponent(id)}`);
-  } catch (error) {
-    if (error.status === 404) {
-      throw denied(what);
-    }
-    throw error;
-  }
-}
-
-async function getOwnedCourse(courseId) {
-  const me = requireInstructor();
-  const course = await fetchRecord('courses', courseId, 'course');
-
-  if (!same(course.instructorId, me)) {
-    throw denied('course');
-  }
-
-  return course;
-}
-
-async function getOwnedStudent(studentId) {
-  const me = requireInstructor();
-  const student = await fetchRecord('students', studentId, 'student');
-
-  if (!same(student.instructorId, me)) {
-    throw denied('student');
-  }
-
-  return student;
-}
-
-/** A task is owned when the course it points to is owned. */
-async function getOwnedTask(taskId) {
-  const task = await fetchRecord('tasks', taskId, 'task');
-
-  // Throws "Access denied" when the course is missing or belongs to someone else.
-  await getOwnedCourse(task.courseId);
-
-  return task;
-}
-
-/** An attendance record is owned when its student is owned. */
-async function getOwnedAttendanceRecord(recordId) {
-  const record = await fetchRecord('attendance', recordId, 'attendance record');
-
-  await getOwnedStudent(record.studentId);
-
-  return record;
-}
 
 
 /* =========================
    AUTH
 ========================= */
 
-/*
- * E-mail rules:
- *   - Every e-mail must end with the university domain below (EMAIL_DOMAIN),
- *     written exactly like that, in lowercase - like "gmail.com", never "Gmail.com".
- *     Sign-up AND login show a notice if another domain is used.
- *   - Before the "@": CASE-SENSITIVE. "shatha@bau.edu.jo" and "Shatha@bau.edu.jo"
- *     are two different e-mails (two different accounts).
- *   - Login compares the whole e-mail exactly as it was registered.
- */
-const EMAIL_DOMAIN = 'bau.edu.jo';
-
-const cleanEmail = (email) => String(email ?? '').trim();
-
-/** @throws if the e-mail is not "<name>@bau.edu.jo" with the domain in lowercase */
-function assertValidEmail(email) {
-  const at = email.indexOf('@');
-  const validShape =
-    at > 0 && at === email.lastIndexOf('@') && !/\s/.test(email);
-
-  if (!validShape || email.slice(at + 1) !== EMAIL_DOMAIN) {
-    throw new Error(
-      `Please use your university email: name@${EMAIL_DOMAIN} (the domain must be exactly ${EMAIL_DOMAIN}).`
-    );
-  }
-}
-
-/**
- * @throws if the e-mail does not follow name@bau.edu.jo
- * @returns {Promise<object|null>} the user (without password) or null if credentials are wrong
- */
 export async function loginUser(email, password) {
-  const typed = cleanEmail(email);
-
-  assertValidEmail(typed);
-
-  const users = await request('/users');
+  const users = await request(
+    `/users${toQuery({
+      email: String(email).trim().toLowerCase(),
+    })}`
+  );
 
   const user = users.find(
-    (u) => cleanEmail(u.email) === typed && u.password === password
+    (u) => u.password === password
   );
 
   return user ? withoutPassword(user) : null;
 }
 
-/**
- * @throws if the e-mail does not follow name@bau.edu.jo, or is already registered
- * @returns {Promise<object>} the created user (without password)
- */
 export async function registerUser(userData) {
-  const email = cleanEmail(userData.email);
+  const email = String(userData.email)
+    .trim()
+    .toLowerCase();
 
-  assertValidEmail(email);
+  const existing = await request(
+    `/users${toQuery({ email })}`
+  );
 
-  const users = await request('/users');
-
-  // Exactly the same e-mail (including the case of the name) = taken.
-  if (users.some((u) => cleanEmail(u.email) === email)) {
-    throw new Error('This email is already registered.');
+  if (existing.length) {
+    throw new Error(
+      'This email is already registered.'
+    );
   }
 
   const created = await send('POST', '/users', {
@@ -296,94 +143,65 @@ export async function registerUser(userData) {
    COURSES
 ========================= */
 
-/** Only the logged-in instructor's courses. */
-export async function getCourses() {
-  const me = requireInstructor();
-
-  const courses = await request(`/courses${ownerQuery(me)}`);
-
-  // Defence in depth: never trust the server-side filter alone.
-  return courses.filter((c) => same(c.instructorId, me));
-}
+export const getCourses = () =>
+  request('/courses');
 
 const nameKey = (name) =>
-  String(name).trim().replace(/\s+/g, ' ').toLowerCase();
+  String(name)
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLowerCase();
 
 export async function addCourse(courseData) {
-  const me = requireInstructor();
+  const code = String(courseData.code)
+    .trim()
+    .toUpperCase();
 
-  const code = String(courseData.code).trim().toUpperCase();
   const name = String(courseData.name).trim();
 
   if (!code || !name) {
-    throw new Error('Course code and course name are required.');
+    throw new Error(
+      'Course code and course name are required.'
+    );
   }
 
-  // Duplicates are checked among THIS instructor's courses only.
-  const mine = await getCourses();
+  const all = await request('/courses');
 
-  if (mine.some((c) => String(c.code).trim().toUpperCase() === code)) {
-    throw new Error(`Course ${code} already exists.`);
+  if (
+    all.some(
+      (c) =>
+        String(c.code).trim().toUpperCase() === code
+    )
+  ) {
+    throw new Error(
+      `Course ${code} already exists.`
+    );
   }
 
-  if (mine.some((c) => nameKey(c.name) === nameKey(name))) {
-    throw new Error(`A course named "${name}" already exists.`);
+  if (
+    all.some(
+      (c) => nameKey(c.name) === nameKey(name)
+    )
+  ) {
+    throw new Error(
+      `A course named "${name}" already exists.`
+    );
   }
 
   return send('POST', '/courses', {
     code,
     name,
-    instructorId: me,
   });
 }
 
-/*
- * Update one of YOUR courses. Rejected when the course belongs to someone else
- * (or to nobody). instructorId can never be changed here.
- */
-export async function updateCourse(id, courseData) {
-  const course = await getOwnedCourse(id);
-
-  const data = withoutOwnerFields(courseData);
-
-  if (data.code !== undefined) {
-    data.code = String(data.code).trim().toUpperCase();
-  }
-
-  if (data.name !== undefined) {
-    data.name = String(data.name).trim();
-  }
-
-  if (data.code === '' || data.name === '') {
-    throw new Error('Course code and course name are required.');
-  }
-
-  // Duplicates are checked among THIS instructor's other courses only.
-  const others = (await getCourses()).filter((c) => !same(c.id, course.id));
-
-  if (
-    data.code !== undefined &&
-    others.some((c) => String(c.code).trim().toUpperCase() === data.code)
-  ) {
-    throw new Error(`Course ${data.code} already exists.`);
-  }
-
-  if (
-    data.name !== undefined &&
-    others.some((c) => nameKey(c.name) === nameKey(data.name))
-  ) {
-    throw new Error(`A course named "${data.name}" already exists.`);
-  }
-
-  return send('PATCH', `/courses/${encodeURIComponent(course.id)}`, data);
-}
-
 export async function deleteCourse(id) {
-  const course = await getOwnedCourse(id);
-
   const [students, tasks] = await Promise.all([
-    getStudents({ courseId: course.id }),
-    getTasksByCourse(course.id),
+    request(
+      `/students${toQuery({ courseId: id })}`
+    ),
+    request(
+      `/tasks${toQuery({ courseId: id })}`
+    ),
   ]);
 
   if (students.length || tasks.length) {
@@ -392,7 +210,7 @@ export async function deleteCourse(id) {
     );
   }
 
-  return send('DELETE', `/courses/${encodeURIComponent(course.id)}`);
+  return send('DELETE', `/courses/${id}`);
 }
 
 
@@ -400,55 +218,69 @@ export async function deleteCourse(id) {
    STUDENTS
 ========================= */
 
-/**
- * Only the logged-in instructor's students.
- * Extra filters (e.g. { courseId }) are allowed, but instructorId always comes
- * from the session — a caller-supplied instructorId is overwritten.
- */
-export async function getStudents(filters = {}) {
-  const me = requireInstructor();
-
-  // Only instructorId goes to the server; other filters are applied below so
-  // that 1 vs "1" id-type differences in old records can't hide data.
-  const students = await request(`/students${ownerQuery(me)}`);
-
-  return students.filter(
-    (s) =>
-      same(s.instructorId, me) &&
-      (filters.courseId === undefined ||
-        filters.courseId === '' ||
-        same(s.courseId, filters.courseId))
+export const getStudents = (filters = {}) =>
+  request(
+    `/students${toQuery(filters)}`
   );
-}
 
 
 /* =========================
    CHECK UNIQUE STUDENT EMAIL
 ========================= */
 
-async function validateStudentEmail(email, studentId = null) {
-  const normalizedEmail = String(email).trim().toLowerCase();
+async function validateStudentEmail(
+  email,
+  studentId = null
+) {
+  // Remove spaces and make email lowercase
+  const normalizedEmail = String(email)
+    .trim()
+    .toLowerCase();
 
+  // Check that email is not empty
   if (!normalizedEmail) {
-    throw new Error('Student email is required.');
+    throw new Error(
+      'Student email is required.'
+    );
   }
 
-  // Only this instructor's students are compared.
+  // Get all students
   const students = await getStudents();
 
-  const emailExists = students.some((student) => {
-    const sameEmail =
-      String(student.email || '').trim().toLowerCase() === normalizedEmail;
+  // Check if another student already uses this email
+  const emailExists = students.some(
+    (student) => {
 
-    // When editing, a student's own email is not a duplicate.
-    const differentStudent =
-      studentId === null || !same(student.id, studentId);
+      const existingEmail = String(
+        student.email || ''
+      )
+        .trim()
+        .toLowerCase();
 
-    return sameEmail && differentStudent;
-  });
+      const sameEmail =
+        existingEmail === normalizedEmail;
+
+      /*
+       * If we are editing a student,
+       * don't consider that same student's
+       * email a duplicate.
+       */
+      const differentStudent =
+        studentId === null ||
+        String(student.id) !==
+          String(studentId);
+
+      return (
+        sameEmail &&
+        differentStudent
+      );
+    }
+  );
 
   if (emailExists) {
-    throw new Error('This email is already used by another student.');
+    throw new Error(
+      'This email is already used by another student.'
+    );
   }
 
   return normalizedEmail;
@@ -459,25 +291,27 @@ async function validateStudentEmail(email, studentId = null) {
    ADD STUDENT
 ========================= */
 
-export async function addStudent(studentData) {
-  const me = requireInstructor();
+export async function addStudent(
+  studentData
+) {
+  // Check email before adding
+  const email =
+    await validateStudentEmail(
+      studentData.email
+    );
 
-  // The selected course must belong to this instructor.
-  const course = await getOwnedCourse(studentData.courseId);
+  return send(
+    'POST',
+    '/students',
+    {
+      status: STATUS.ACTIVE,
 
-  const email = await validateStudentEmail(studentData.email);
-
-  return send('POST', '/students', {
-    status: STATUS.ACTIVE,
-
-    ...normalize({
-      ...withoutOwnerFields(studentData),
-      email,
-      courseId: course.id,
-    }),
-
-    instructorId: me, // always from the session, never from the form
-  });
+      ...normalize({
+        ...studentData,
+        email: email,
+      }),
+    }
+  );
 }
 
 
@@ -485,220 +319,299 @@ export async function addStudent(studentData) {
    UPDATE STUDENT
 ========================= */
 
-export async function updateStudent(id, studentData) {
-  // Rejects when the student is not yours.
-  const student = await getOwnedStudent(id);
+export async function updateStudent(
+  id,
+  studentData
+) {
+  const data = {
+    ...studentData,
+  };
 
-  const data = withoutOwnerFields(studentData); // instructorId can't be changed
-
+  /*
+   * Check email only when an email
+   * is included in the update.
+   */
   if (data.email !== undefined) {
-    data.email = await validateStudentEmail(data.email, student.id);
-  }
 
-  // Moving a student is only allowed into one of your own courses.
-  if (data.courseId !== undefined) {
-    const course = await getOwnedCourse(data.courseId);
-    data.courseId = course.id;
+    data.email =
+      await validateStudentEmail(
+        data.email,
+        id
+      );
   }
 
   return send(
     'PATCH',
-    `/students/${encodeURIComponent(student.id)}`,
+    `/students/${id}`,
     normalize(data)
   );
 }
-
-
 /* =========================
    ATTENDANCE
 ========================= */
 
-/**
- * Only attendance of the logged-in instructor's students.
- * A { studentId } filter is verified against student ownership first.
- */
-export async function getAttendance(filters = {}) {
-  const me = requireInstructor();
+export const ATTENDANCE = Object.freeze({
+  PRESENT: 'Present',
+  ABSENT: 'Absent',
+});
 
-  if (filters.studentId !== undefined && filters.studentId !== '') {
-    await getOwnedStudent(filters.studentId);
-  }
-
-  const [records, myStudents] = await Promise.all([
-    request(`/attendance${ownerQuery(me)}`),
-    getStudents(),
-  ]);
-
-  const myIds = new Set(myStudents.map((s) => String(s.id)));
-
-  // Authority is the student's owner; the record's own instructorId is only
-  // an optimisation for the query above.
-  return records.filter(
-    (r) =>
-      r.studentId !== undefined &&
-      r.studentId !== null &&
-      myIds.has(String(r.studentId)) &&
-      (filters.studentId === undefined ||
-        filters.studentId === '' ||
-        same(r.studentId, filters.studentId)) &&
-      (!filters.date || r.date === filters.date)
+export const getAttendance = (filters = {}) =>
+  request(
+    `/attendance${toQuery(filters)}`
   );
-}
 
 
 /*
- * Attendance rate for one student:
- *   Present / (Present + Absent) * 100
- * calculated from the real attendance records.
+ * Calculate attendance rate for one student.
+ *
+ * Formula:
+ *
+ * Present records / (Present + Absent records) * 100
+ *
+ * Example:
+ * 8 Present + 2 Absent
+ * = 8 / 10 * 100
+ * = 80%
+ *
+ * The calculation uses the actual attendance records,
+ * not the old attendanceRate value stored in students.
  */
-export const calculateAttendanceRate = (records, studentId) => {
-  const studentRecords = records.filter((record) => {
-    if (!record) return false;
+export const calculateAttendanceRate = (
+  records,
+  studentId
+) => {
 
-    if (record.studentId === null || record.studentId === undefined) {
-      return false;
+  const studentRecords = records.filter(
+    (record) => {
+
+      if (!record) {
+        return false;
+      }
+
+      if (
+        record.studentId === null ||
+        record.studentId === undefined
+      ) {
+        return false;
+      }
+
+      const sameStudent =
+        String(record.studentId) ===
+        String(studentId);
+
+      const validStatus =
+        record.status === ATTENDANCE.PRESENT ||
+        record.status === ATTENDANCE.ABSENT;
+
+      return sameStudent && validStatus;
     }
-
-    const validStatus =
-      record.status === ATTENDANCE.PRESENT ||
-      record.status === ATTENDANCE.ABSENT;
-
-    return same(record.studentId, studentId) && validStatus;
-  });
+  );
 
   if (!studentRecords.length) {
     return 0;
   }
 
-  const presentCount = studentRecords.filter(
-    (record) => record.status === ATTENDANCE.PRESENT
-  ).length;
+  const presentCount =
+    studentRecords.filter(
+      (record) =>
+        record.status === ATTENDANCE.PRESENT
+    ).length;
 
-  return Math.round((presentCount / studentRecords.length) * 100);
+  return Math.round(
+    (presentCount / studentRecords.length) * 100
+  );
 };
 
 
-/* Recalculate and save the attendanceRate of one (owned) student. */
+/*
+ * Recalculate and save the attendanceRate
+ * of one student.
+ */
 async function refreshAttendanceRate(studentId) {
-  const student = await getOwnedStudent(studentId);
 
-  const records = await getAttendance({ studentId: student.id });
+  const records =
+    await getAttendance();
 
-  const rate = calculateAttendanceRate(records, student.id);
+  const rate =
+    calculateAttendanceRate(
+      records,
+      studentId
+    );
 
-  await send('PATCH', `/students/${encodeURIComponent(student.id)}`, {
-    attendanceRate: rate,
-  });
+  await send(
+    'PATCH',
+    `/students/${studentId}`,
+    {
+      attendanceRate: rate
+    }
+  );
 
   return rate;
 }
 
 
 /*
- * Add or update attendance for one of your students.
- * studentId is stored as a string (never Number(): ids can be like "aScZwmPGwVI").
+ * Add or update attendance.
+ *
+ * IMPORTANT:
+ * Do NOT use Number(studentId).
+ *
+ * JSON Server may generate string IDs such as:
+ *
+ * "aScZwmPGwVI"
+ *
+ * Number("aScZwmPGwVI") === NaN
+ *
+ * which can end up stored as null.
  */
-export async function recordAttendance({ studentId, date, status }) {
-  const me = requireInstructor();
+export async function recordAttendance({
+  studentId,
+  date,
+  status,
+}) {
 
-  const student = await getOwnedStudent(studentId);
-
-  const existing = await getAttendance({ studentId: student.id, date });
+  const existing =
+    await getAttendance({
+      studentId,
+      date,
+    });
 
   const data = {
-    studentId: String(student.id),
-    date,
-    status,
-    instructorId: me,
+    studentId: String(studentId),
+    date: date,
+    status: status,
   };
 
   let saved;
 
+  /*
+   * If a record already exists for this student
+   * on this date, update it.
+   */
   if (existing.length) {
+
     saved = await send(
       'PATCH',
-      `/attendance/${encodeURIComponent(existing[0].id)}`,
+      `/attendance/${existing[0].id}`,
       data
     );
-  } else {
-    saved = await send('POST', '/attendance', data);
+
   }
 
-  await refreshAttendanceRate(student.id);
+  /*
+   * Otherwise create a new attendance record.
+   */
+  else {
+
+    saved = await send(
+      'POST',
+      '/attendance',
+      data
+    );
+  }
+
+  /*
+   * Recalculate the student's attendance percentage
+   * after the attendance record changes.
+   */
+  await refreshAttendanceRate(
+    studentId
+  );
 
   return saved;
 }
 
 
 /*
- * Update an existing attendance record (e.g. when the date is changed while
- * editing a student). Both the record's current student and the target student
- * must be yours.
+ * Update an existing attendance record.
+ *
+ * This is especially important when the user changes
+ * the attendance DATE while editing a student.
  */
 export async function updateAttendanceRecord(
   recordId,
-  { studentId, date, status }
-) {
-  const me = requireInstructor();
-
-  const record = await getOwnedAttendanceRecord(recordId);
-  const student = await getOwnedStudent(studentId);
-
-  const allRecords = await getAttendance({ studentId: student.id });
-
-  // Another record for the same student/date would make a duplicate.
-  const duplicate = allRecords.find(
-    (r) => !same(r.id, record.id) && r.date === date
-  );
-
-  const data = {
-    studentId: String(student.id),
+  {
+    studentId,
     date,
-    status,
-    instructorId: me,
-  };
+    status
+  }
+) {
+
+  const allRecords =
+    await getAttendance();
+
+  /*
+   * Check whether another attendance record already
+   * exists for the same student and new date.
+   */
+  const duplicate =
+    allRecords.find(
+      (record) =>
+        String(record.id) !==
+          String(recordId) &&
+
+        String(record.studentId) ===
+          String(studentId) &&
+
+        record.date === date
+    );
+
 
   let saved;
 
+
+  /*
+   * If another record already exists for the
+   * same student/date, update that record and
+   * delete the old record.
+   *
+   * This prevents duplicate attendance records.
+   */
   if (duplicate) {
+
     saved = await send(
       'PATCH',
-      `/attendance/${encodeURIComponent(duplicate.id)}`,
-      data
+      `/attendance/${duplicate.id}`,
+      {
+        studentId: String(studentId),
+        date: date,
+        status: status
+      }
     );
 
-    await send('DELETE', `/attendance/${encodeURIComponent(record.id)}`);
-  } else {
+    await send(
+      'DELETE',
+      `/attendance/${recordId}`
+    );
+
+  }
+
+  /*
+   * Otherwise simply update the existing record.
+   */
+  else {
+
     saved = await send(
       'PATCH',
-      `/attendance/${encodeURIComponent(record.id)}`,
-      data
+      `/attendance/${recordId}`,
+      {
+        studentId: String(studentId),
+        date: date,
+        status: status
+      }
     );
   }
 
-  await refreshAttendanceRate(student.id);
 
-  // If the record was moved to a different student, refresh the old one too.
-  if (!same(record.studentId, student.id)) {
-    await refreshAttendanceRate(record.studentId);
-  }
-
-  return saved;
-}
-
-
-/* Delete one attendance record (its student must be yours). */
-export async function deleteAttendanceRecord(recordId) {
-  const record = await getOwnedAttendanceRecord(recordId);
-
-  const result = await send(
-    'DELETE',
-    `/attendance/${encodeURIComponent(record.id)}`
+  /*
+   * Recalculate attendance percentage
+   * after changing the record.
+   */
+  await refreshAttendanceRate(
+    studentId
   );
 
-  await refreshAttendanceRate(record.studentId);
-
-  return result;
+  return saved;
 }
 
 
@@ -707,19 +620,27 @@ export async function deleteAttendanceRecord(recordId) {
 ========================= */
 
 export async function deleteStudent(id) {
-  // Ownership is verified BEFORE anything is deleted.
-  const student = await getOwnedStudent(id);
-
-  // Remove the student's attendance first so there are no orphan records.
-  const records = await getAttendance({ studentId: student.id });
+  /*
+   * Delete attendance records belonging to the
+   * student first so there are no orphan records.
+   */
+  const records = await getAttendance({
+    studentId: id,
+  });
 
   await Promise.all(
     records.map((record) =>
-      send('DELETE', `/attendance/${encodeURIComponent(record.id)}`)
+      send(
+        'DELETE',
+        `/attendance/${record.id}`
+      )
     )
   );
 
-  return send('DELETE', `/students/${encodeURIComponent(student.id)}`);
+  return send(
+    'DELETE',
+    `/students/${id}`
+  );
 }
 
 
@@ -727,171 +648,119 @@ export async function deleteStudent(id) {
    TASKS
 ========================= */
 
-/** Only tasks that belong to the logged-in instructor's courses. */
-export async function getTasks() {
-  const me = requireInstructor();
+export const getTasks = () =>
+  request('/tasks');
 
-  const [tasks, myCourses] = await Promise.all([
-    request(`/tasks${ownerQuery(me)}`),
-    getCourses(),
-  ]);
+export const getTasksByCourse = (courseId) =>
+  request(
+    `/tasks${toQuery({ courseId })}`
+  );
 
-  const myCourseIds = new Set(myCourses.map((c) => String(c.id)));
-
-  // Authority: task.courseId -> course.instructorId
-  return tasks.filter((t) => myCourseIds.has(String(t.courseId)));
-}
-
-export async function getTasksByCourse(courseId) {
-  const course = await getOwnedCourse(courseId);
-
-  const tasks = await getTasks();
-
-  return tasks.filter((t) => same(t.courseId, course.id));
-}
-
-export async function addTask(taskData) {
-  const me = requireInstructor();
-
-  // The course must belong to this instructor.
-  const course = await getOwnedCourse(taskData.courseId);
-
-  return send('POST', '/tasks', {
+export const addTask = (taskData) =>
+  send('POST', '/tasks', {
     progress: 0,
     pendingGrading: 0,
-    ...normalize(withoutOwnerFields(taskData)),
-    courseId: String(course.id),
-    instructorId: me,
+    ...normalize(taskData),
   });
-}
 
-export async function updateTask(id, taskData) {
-  const task = await getOwnedTask(id);
-
-  const data = withoutOwnerFields(taskData);
-
-  // A task can only be moved to one of your own courses.
-  if (data.courseId !== undefined) {
-    const course = await getOwnedCourse(data.courseId);
-    data.courseId = course.id;
-  }
-
-  return send(
-    'PATCH',
-    `/tasks/${encodeURIComponent(task.id)}`,
-    normalize(data)
-  );
-}
-
-export async function deleteTask(id) {
-  const task = await getOwnedTask(id);
-
-  return send('DELETE', `/tasks/${encodeURIComponent(task.id)}`);
-}
+export const deleteTask = (id) =>
+  send('DELETE', `/tasks/${id}`);
 
 
 /* =========================
    DASHBOARD
 ========================= */
 
-const GRADE_LABELS = ['A', 'B', 'C', 'D', 'F'];
+const GRADE_LABELS = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'F',
+];
 
 const gradeBucket = (grade) =>
-  grade >= 90 ? 0 : grade >= 80 ? 1 : grade >= 70 ? 2 : grade >= 60 ? 3 : 4;
+  grade >= 90
+    ? 0
+    : grade >= 80
+    ? 1
+    : grade >= 70
+    ? 2
+    : grade >= 60
+    ? 3
+    : 4;
 
-/* Everything below is built ONLY from the instructor-scoped getters above. */
-export async function getDashboardData({ courseId } = {}) {
-  const [allStudents, courses, allTasks] = await Promise.all([
+export async function getDashboardData({
+  courseId,
+} = {}) {
+  const [
+    allStudents,
+    courses,
+    allTasks,
+  ] = await Promise.all([
     getStudents(),
     getCourses(),
     getTasks(),
   ]);
 
-  const cid = courseId ? String(courseId) : null;
-
-  // A courseId that is not one of your courses is rejected.
-  if (cid && !courses.some((c) => same(c.id, cid))) {
-    throw denied('course');
-  }
+  const cid = courseId
+    ? Number(courseId)
+    : null;
 
   const students = cid
-    ? allStudents.filter((s) => same(s.courseId, cid))
+    ? allStudents.filter(
+        (s) => s.courseId === cid
+      )
     : allStudents;
 
   const tasks = cid
-    ? allTasks.filter((t) => same(t.courseId, cid))
+    ? allTasks.filter(
+        (t) => t.courseId === cid
+      )
     : allTasks;
 
-  const courseById = Object.fromEntries(courses.map((c) => [String(c.id), c]));
+  const courseById = Object.fromEntries(
+    courses.map((c) => [c.id, c])
+  );
 
   const statusCounts = {
     [STATUS.ACTIVE]: 0,
     [STATUS.AT_RISK]: 0,
     [STATUS.ARCHIVED]: 0,
   };
-
   const counts = [0, 0, 0, 0, 0];
-
-  students.forEach((student) => {
-    if (student.status in statusCounts) {
-      statusCounts[student.status]++;
-    }
-
-    counts[gradeBucket(Number(student.grade))]++;
+  students.forEach((s) => {
+    if (s.status in statusCounts) statusCounts[s.status] += 1;
+    counts[gradeBucket(Number(s.grade))] += 1;
   });
 
   const activeTasks = tasks
-    .map((task) => ({
-      ...task,
-      courseCode: courseById[String(task.courseId)]?.code ?? '',
-      courseName: courseById[String(task.courseId)]?.name ?? '',
-    }))
+    .map((t) => ({ ...t, courseCode: courseById[t.courseId]?.code ?? '', courseName: courseById[t.courseId]?.name ?? '' }))
     .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
 
   return {
     stats: {
       totalStudents: students.length,
-
       avgAttendance: average(students, 'attendanceRate'),
-
       avgGrade: average(students, 'grade'),
-
-      pendingTasks: tasks.reduce(
-        (sum, task) => sum + Number(task.pendingGrading || 0),
-        0
-      ),
-
+      pendingTasks: tasks.reduce((sum, t) => sum + Number(t.pendingGrading || 0), 0),
       activeTasks: tasks.length,
     },
-
     statusCounts,
-
     gradeDistribution: {
       labels: GRADE_LABELS,
       counts,
-
-      percentages: counts.map((count) =>
-        students.length ? Math.round((count / students.length) * 100) : 0
-      ),
+      percentages: counts.map((n) => (students.length ? Math.round((n / students.length) * 100) : 0)),
     },
-
     courseSummaries: courses
-      .filter((c) => !cid || same(c.id, cid))
-      .map((course) => {
-        const group = students.filter((student) =>
-          same(student.courseId, course.id)
-        );
-
+      .filter((c) => !cid || c.id === cid)
+      .map((c) => {
+        const group = students.filter((s) => s.courseId === c.id);
         return {
-          courseId: course.id,
-          code: course.code,
-          name: course.name,
-          studentCount: group.length,
-          avgGrade: average(group, 'grade'),
-          avgAttendance: average(group, 'attendanceRate'),
+          courseId: c.id, code: c.code, name: c.name,
+          studentCount: group.length, avgGrade: average(group, 'grade'), avgAttendance: average(group, 'attendanceRate'),
         };
       }),
-
     activeTasks,
     students,
     courses,
