@@ -10,8 +10,17 @@ import {
   recordAttendance,
   updateAttendanceRecord,
   calculateAttendanceRate,
+  requireInstructor,
   ATTENDANCE
 } from './apiservice.js';
+
+
+/*
+ * Instructor-specific page: if nobody is logged in this redirects to
+ * login.html and stops the script. getStudents/getCourses/getAttendance and
+ * every add/update/delete in apiservice.js are scoped to this instructor.
+ */
+requireInstructor();
 
 
 /* =========================
@@ -89,9 +98,7 @@ const filters = {
 
   date: '',
 
-  attendance: '',
-
-  query: ''
+  attendance: ''
 
 };
 
@@ -127,21 +134,6 @@ async function init() {
 
 
     fillCourseSelects();
-
-
-    const q =
-      new URLSearchParams(
-        location.search
-      ).get('q');
-
-
-    if (q) {
-
-      filters.query = q;
-
-      $('search').value = q;
-
-    }
 
 
     render();
@@ -354,12 +346,6 @@ function fillCourseSelects() {
 
 function baseStudents() {
 
-  const q =
-    filters.query
-      .trim()
-      .toLowerCase();
-
-
   return students.filter(
     (student) =>
 
@@ -383,23 +369,6 @@ function baseStudents() {
           filters.status
       )
 
-
-      &&
-
-
-      (
-        !q ||
-
-        student.name
-          .toLowerCase()
-          .includes(q)
-
-        ||
-
-        student.email
-          .toLowerCase()
-          .includes(q)
-      )
 
   );
 
@@ -1393,43 +1362,6 @@ $('stu-clear-date')
 
     }
   );
-
-
-/*
- * Search
- */
-$('search')
-  .addEventListener(
-    'input',
-    (event) => {
-
-      filters.query =
-        event.target.value;
-
-      render();
-
-    }
-  );
-
-
-/*
- * Global search event
- */
-window.addEventListener(
-  'gradify:search',
-  (event) => {
-
-    filters.query =
-      event.detail?.query ??
-      '';
-
-    $('search').value =
-      filters.query;
-
-    render();
-
-  }
-);
 
 
 /* =========================
